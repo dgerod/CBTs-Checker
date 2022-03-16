@@ -27,7 +27,6 @@ namespace cbt {
 const std::string name_path_gen_req = "general_requirements.txt";
 const std::string name_path_bt_plans = "BTplans.txt";
 
-/** \brief Concrete class implemeting a Conditioned Behavior Tree. */
 class conditioned_behavior_tree
 {
 public:
@@ -92,9 +91,8 @@ public:
      * \param input_path string containing the path to the input .xml file
      * \param req_path string containing the path to the input .txt file with the initial requirements
      * \param output_folder string containing the path to the output folder
-     * \param limboole_path string containing the path to the limboole executable
      */
-    void compute_initial_requirements(std::string const input_path,std::string const req_path, std::string const output_folder, std::string const limboole_path);
+    void compute_initial_requirements(std::string const input_path,std::string const req_path, std::string const output_folder);
 
 private:
     //Functions to be used to read and check the XML file
@@ -106,16 +104,11 @@ private:
     void read_BT(std::ifstream * const, std::string);
     std::string read_next_node(std::ifstream * const, control_flow_node * const);
     void read_execution_node(std::string, control_flow_node * const);
-    void execute_program(std::string);
-    
-private:
-    /** Attribute representing the root of the CBT.*/
+        
+private:    
     control_flow_node* root_;
-    /** Attribute representing the set of actions read in the vocabulary.*/
     std::set<action> actions_;
-    /** Attribute representing the length of the longest sequence of actions of the entire CBT.*/
     int max_length_sequence_;
-
 };
     
 }

@@ -41,8 +41,8 @@ void conditioned_behavior_tree::insert_action(action const * const new_action){
     }
 }
 
-//Function that ignores empty lines and whitespaces at the beginning of each
-//line. Takes as input the ifstream and returns the next full line.
+// Function that ignores empty lines and whitespaces at the beginning of each
+// line. Takes as input the ifstream and returns the next full line.
 std::string conditioned_behavior_tree::get_next_line(std::ifstream * const file){
     std::string line = "";
     bool end_file = false;
@@ -56,7 +56,7 @@ std::string conditioned_behavior_tree::get_next_line(std::ifstream * const file)
     return line;
 }
 
-//Function that, given a line, returns the cleaned action label.
+// Function that, given a line, returns the cleaned action label.
 std::string conditioned_behavior_tree::read_action_label(std::string const line){
     unsigned long first_quotation_marks = line.find("\"");
     unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
@@ -69,7 +69,7 @@ std::string conditioned_behavior_tree::read_action_label(std::string const line)
     return label;
 }
 
-//Function that, given a line, returns the cleaned condition label.
+// Function that, given a line, returns the cleaned condition label.
 std::string conditioned_behavior_tree::read_condition_label(std::string const line){
     unsigned long first_quotation_marks = line.find("\"");
     unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
@@ -89,11 +89,11 @@ std::string conditioned_behavior_tree::read_condition_label(std::string const li
     return label;
 }
 
-//Function processing and storing a single action
+// Function processing and storing a single action
 void conditioned_behavior_tree::read_single_action(std::ifstream * const file){
     action* new_action = new action();
     
-    //Get the label of the action and check the input format
+    // Get the label of the action and check the input format
     std::string line;
     line = get_next_line(file);
     if (line.substr(0,11).find("YARPAction") == std::string::npos)
@@ -102,7 +102,7 @@ void conditioned_behavior_tree::read_single_action(std::ifstream * const file){
     std::string action_label = read_action_label(line);
     new_action->set_label(action_label);
     
-    //Get the Pre-conditions of the action and check the input format
+    // Get the Pre-conditions of the action and check the input format
     std::string pre_label;
     line = get_next_line(file);
     while(line.substr(0,13).find("Precondition") != std::string::npos){
@@ -138,7 +138,7 @@ void conditioned_behavior_tree::read_single_action(std::ifstream * const file){
     if (line.compare("</ActionTemplate>") != 0)
         throw std::runtime_error("Input XML file bad format: object ActionTemplate must end with </ActionTemplate>");
     
-    //Insert the new action in the list of actions
+    // Insert the new action in the list of actions
     this->insert_action(new_action);
 }
 
@@ -371,7 +371,7 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
             ret = formulas.insert(std::pair<std::string, std::vector<std::string>> (post, actions));
             if (!ret.second)
             { 
-                //it means that the pair with that condition already existed in the map, in that case nothing is inserted
+                // it means that the pair with that condition already existed in the map, in that case nothing is inserted
                 ret.first->second.insert(ret.first->second.begin(), action);
             }
             if(post.substr(0,1).compare("!") == 0)
@@ -434,25 +434,8 @@ void conditioned_behavior_tree::create_CBT_plan(std::string const output_folder)
     file.close();    
 }
 
-void conditioned_behavior_tree::execute_program(std::string c){
-
-    std::string command(c);
-    
-    std::array<char, 128> buffer;
-    std::string result;
-    
-    FILE* pipe = popen(command.c_str(), "r");
-    
-    while (fgets(buffer.data(), 128, pipe) != NULL) {
-        result += buffer.data();
-    }
-    pclose(pipe);
-    
-}
-
-//Function handling the pipeline of the functions to call
 void conditioned_behavior_tree::compute_initial_requirements(std::string const input_path, 
-    std::string const input_req, std::string const output_folder, std::string const limboole_path) 
+    std::string const input_req, std::string const output_folder) 
 {
     simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::compute_initial_requirements" << std::endl;
 
@@ -461,18 +444,5 @@ void conditioned_behavior_tree::compute_initial_requirements(std::string const i
     this->compute_ex_times();
     this->create_state_graph(output_folder, input_req);
     this->create_CBT_plan(output_folder);
-        
-#if 0
-    std::string output_path_bt_plans = output_folder + name_path_bt_plans;
-    std::string output_path_gen_req = output_folder + name_path_gen_req;
-    std::string command_string = limboole_path + " -s " + output_path_bt_plans + ">> " + output_path_gen_req;
-    
-    remove(output_path_gen_req.c_str());
-    execute_program(command_string);
-    
-    std::ifstream general_requirements;     
-    general_requirements.open(output_path_gen_req);        
-    general_requirements.close();
-#endif
 }
 

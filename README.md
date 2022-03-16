@@ -2,6 +2,13 @@
 
 Given a Conditional Behavior Tree (CBT) this program is able to check its executability.
 
+References:
+
+* __Conditional Behavior Trees: Definition, Executability, and Applications__.
+Eleonora Giunchiglia, Michele Colledanchise, Lorenzo Natale and Armando Tacchella [PDF](https://lornat75.github.io/papers/2019/giunchiglia-smc.pdf)
+* __Computing the Initial Requirements in Conditioned Behavior Trees__.
+Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-08.pdf)
+
 ## TO DO
 
 - add the possibility of additing initial conditions

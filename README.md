@@ -30,19 +30,21 @@ If the message  *command not found* appears that it means that gcc is not instal
 
 ##### External Program 
 
-In order to check the satisfiability of the propositional logic encoding, we deploy the external program `limboole`which can be downloaded and deployed by following the steps below:
+In order to check the satisfiability of the propositional logic encoding, the external program *limboole* is needed. Follow next steps to download and compile it:
 
-1. Limboole deploys *PicoSAT* as backend. If you do not have it on yuor machine, follow the steps below:
+1. *limboole* requires *PicoSAT* as backend. If you do not have it on yuor machine, follow the steps below:
 
-     * dowload the file picosat-965..tar.gz that you can find at the link http://fmv.jku.at/picosat/
+     * dowload the file `"picosat-965.tar.gz"` that you can find at the link http://fmv.jku.at/picosat
      * decompress the downloaded file
-     * rename the folder picosat-965 to picosat
+     * rename the folder `"picosat-965"` to `"picosat"`
      * in the picosat folder execute `./configure.sh && make`.
 
-2. Once you have *PicoSAT* go to the link http://fmv.jku.at/limboole/
-3. Dowload the file **limboole1.1.tar.gz**
-4. Decompress the dowloaded file in the **same folder** in which the picosat folder is placed 
-5. In the decompressed folder (limboole1.1) execute the command `./configure.sh && make`.
+2. Once you have *PicoSAT*, it is time to compile *limboole*:
+
+     * go to the link http://fmv.jku.at/limboole
+     * dowload the file `"limboole1.1.tar.gz"`
+     * decompress the dowloaded file in the **same folder** in which the picosat folder is placed 
+     * in the decompressed folder (limboole1.1) execute the command `./configure.sh && make`.
 
 ## How to use it
 

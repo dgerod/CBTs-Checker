@@ -1,5 +1,5 @@
 #define input file
-INFILE = "./input/fig1.xml"
+INFILE = "./input/tree.xml"
 
 #define output folder
 OUTFOLDER = "./output/"
@@ -35,10 +35,10 @@ OBJDIR = ./build
 EXEDIR = ./bin
 
 # define the C source files
-SRCS = $(addprefix $(SRCDIR)/, action.cpp conditioned_behavior_tree.cpp control_flow_node.cpp execution_node.cpp main.cpp task.cpp) 
+SRCS = $(addprefix $(SRCDIR)/, simple_logger.cpp action.cpp conditioned_behavior_tree.cpp control_flow_node.cpp execution_node.cpp main.cpp task.cpp) 
 
 # define the C source files
-SRCS_TEST = $(addprefix $(SRCDIR)/, action.cpp conditioned_behavior_tree.cpp control_flow_node.cpp execution_node.cpp task.cpp) $(addprefix $(TESTDIR)/, $(TEST_FUNC_DIR)/test_funzionali.cpp $(addprefix $(TEST_STRUCT_DIR)/, stage_1.cpp stage_2.cpp stage_3.cpp stage_4.cpp stage_5.cpp) test.cpp) 
+SRCS_TEST = $(SRCS) $(addprefix $(TESTDIR)/, $(TEST_FUNC_DIR)/test_funzionali.cpp $(addprefix $(TEST_STRUCT_DIR)/, stage_1.cpp stage_2.cpp stage_3.cpp stage_4.cpp stage_5.cpp) test.cpp) 
 
 # define the C object files 
 OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
@@ -47,34 +47,33 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 OBJS_TEST = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS_TEST))
 
 # define the executable file 
-MAIN = CBT_requirements_calculator
+MAIN_APP = CBT_requirements_calculator
 
 #define the executable file for functional tests 
-MAIN_TEST = CBT_requirements_calculator_test
+MAIN_TEST = tests
 
 .PHONY: depend clean run
 
-compile: $(MAIN)
+compile: $(MAIN_APP)
 	@echo Program compiled and built
 
-$(MAIN): $(OBJS) 
-	$(CCXX) $(CXXFLAGS) $(INCLUDES) -o $(EXEDIR)/$(MAIN) $(OBJS)
+$(MAIN_APP): $(OBJS) 
+	$(CCXX) $(CXXFLAGS) $(INCLUDES) -o $(EXEDIR)/$(MAIN_APP) $(OBJS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "Compiling: " $@
 	$(CCXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
 clean:
-	$(RM) ./build/*.o *~ $(EXEDIR)/$(MAIN)
+	$(RM) ./build/*.o *~ $(EXEDIR)/$(MAIN_APP)
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
 
 # DO NOT DELETE THIS LINE -- make depend needs it
 
-run: $(MAIN)
-	$(EXEDIR)/$(MAIN) $(INFILE) $(OUTFOLDER) $(LIMBOOLEPATH)
-
+run: $(MAIN_APP)
+	$(EXEDIR)/$(MAIN_APP) $(INFILE) $(OUTFOLDER) $(LIMBOOLEPATH)
 
 $(MAIN_TEST): $(OBJS_TEST) 
 	$(CCXX) $(CXXFLAGS) $(INCLUDES) -o $(EXEDIR)/$(MAIN_TEST) $(OBJS_TEST)

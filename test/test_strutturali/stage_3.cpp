@@ -5,7 +5,6 @@
 //
 
 #include <stdio.h>
-
 #include "catch.hpp"
 
 #include "conditioned_behavior_tree.hpp"
@@ -15,22 +14,23 @@ SCENARIO("Test of the third stage of the pipeline: write on output file the repr
     
     cbt::conditioned_behavior_tree* cbtree = new cbt::conditioned_behavior_tree();
     
-    //Suppose the XML file has been read
+    // Suppose the XML file has been read
     cbtree->read_file("./test/test_strutturali/stage_3/complete_CBT.xml");
-    //and that the sence lengths have been computed
+
+    // and that the sence lengths have been computed
     cbtree->compute_length_sequences();
     
     //First the function tries to open the output file
     //If it is not possible than it raises an exceptio
     WHEN("It is not possibile to open the output file"){
-        REQUIRE_THROWS(cbtree->create_state_graph("./not_existing_folder/"));
+        REQUIRE_THROWS(cbtree->create_state_graph("./not_existing_folder/", "./not_existing_folder/"));
     }
     
-    //In the case it manages to open the file, in order to cover all branches we need:
-    //1. a CBT with two actions sharing the same pre or post condition
-    //2. a CBT containing both positive and negative pre and post conditions
+    // In the case it manages to open the file, in order to cover all branches we need:
+    // 1. a CBT with two actions sharing the same pre or post condition
+    // 2. a CBT containing both positive and negative pre and post conditions
     WHEN("We have a CBT with actions sharing pre and post conditions and containing positive and negative conditions"){
-        REQUIRE_NOTHROW(cbtree->create_state_graph("./test/test_strutturali/stage_3/sym_output/"));
+        REQUIRE_NOTHROW(cbtree->create_state_graph("./test/test_strutturali/stage_3/sym_output/", "./test/test_strutturali/stage_3/sym_output/"));
         std::ifstream CBT_plans("./test/test_strutturali/stage_3/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         

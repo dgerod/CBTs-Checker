@@ -8,11 +8,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 include_directories(cbtc/include)
 
-add_executable(cbt_checker
+add_executable(cbt_checker 
+	cbtc/src/main.cpp
 	cbtc/src/simple_logger.cpp 
 	cbtc/src/action.cpp 
 	cbtc/src/conditioned_behavior_tree.cpp 
 	cbtc/src/control_flow_node.cpp 
 	cbtc/src/execution_node.cpp 
-	cbtc/src/task.cpp
-	cbtc/src/main.cpp)
+	cbtc/src/task.cpp)
+
+add_executable(tests
+	test/test.cpp
+	test/test_strutturali/stage_1.cpp
+	test/test_strutturali/stage_2.cpp
+	test/test_strutturali/stage_3.cpp
+	test/test_strutturali/stage_4.cpp
+	test/test_strutturali/stage_5.cpp
+	test/test_funzionali/test_funzionali.cpp
+	cbtc/src/simple_logger.cpp 
+	cbtc/src/action.cpp 
+	cbtc/src/conditioned_behavior_tree.cpp 
+	cbtc/src/control_flow_node.cpp 
+	cbtc/src/execution_node.cpp 
+	cbtc/src/task.cpp)

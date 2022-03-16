@@ -11,6 +11,7 @@ Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-
 
 ## TO DO
 
+- Fix tests because now they are failing
 - add the possibility of additing initial conditions
 - change readme and names of output files 
 

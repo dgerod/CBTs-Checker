@@ -12,8 +12,8 @@ Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-
 ## TO DO
 
 - Fix tests because now they are failing
-- add the possibility of additing initial conditions
-- change readme and names of output files 
+- Add the possibility of additing initial conditions
+- Change readme and names of output files 
 
 ## Installation
 
@@ -33,6 +33,7 @@ If the message  *command not found* appears that it means that gcc is not instal
 In order to check the satisfiability of the propositional logic encoding, we deploy the external program `limboole`which can be downloaded and deployed by following the steps below:
 
 1. Limboole deploys *PicoSAT* as backend. If you do not have it on yuor machine, follow the steps below:
+
      * dowload the file picosat-965..tar.gz that you can find at the link http://fmv.jku.at/picosat/
      * decompress the downloaded file
      * rename the folder picosat-965 to picosat

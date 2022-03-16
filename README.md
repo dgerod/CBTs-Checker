@@ -44,15 +44,6 @@ In order to check the satisfiability of the propositional logic encoding, we dep
 4. Decompress the dowloaded file in the **same folder** in which the picosat folder is placed 
 5. In the decompressed folder (limboole1.1) execute the command `./configure.sh && make`.
 
-### Clone
-
-Clone on your machine the repository `CBT_Requirements_Calculator`
-
-### Compile 
-
-In the folder CBT_Requirements_Calculator execute the command `make compile`.  
-The object fles will be built in the build folder. 
-
 ## How to use it
 
 In order to deploy this program, open the Makefile in the folder CBT_Requirements_Calculator and set the following parameters:

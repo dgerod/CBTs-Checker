@@ -1,6 +1,5 @@
 
 
-
 <ActionTemplate>
 <YARPAction ID = "Action1">
 <Precondition ID="Precondition11">

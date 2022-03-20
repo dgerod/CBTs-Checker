@@ -106,7 +106,14 @@ void write_result(std::string const output_folder, bool valid)
 
 const std::string read_configuration(const std::string file_path)
 {
-    std::string limboole_path = "../dependencies/limboole/limboole";
+    std::ifstream file;     
+    file.open(file_path);       
+   
+    std::string line;
+    line = get_next_line(&file);
+    std::string limboole_path = line;
+
+    file.close();
     return limboole_path;
 }
 

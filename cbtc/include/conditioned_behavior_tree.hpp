@@ -21,9 +21,6 @@
 
 
 namespace cbtc {
-    
-const std::string name_path_gen_req = "general_requirements.txt";
-const std::string name_path_bt_plans = "BTplans.txt";
 
 class conditioned_behavior_tree
 {

@@ -46,16 +46,15 @@ void conditioned_behavior_tree::insert_action(action const* const new_action)
     }
 }
 
-
 void conditioned_behavior_tree::generate_initial_requirements(std::string const requirements_path, 
-std::string const output_folder) 
+std::string const output_path_bt_plans) 
 {
     simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::compute_initial_requirements" << std::endl;
 
     this->compute_length_sequences();
     this->compute_ex_times();
-    this->create_state_graph(output_folder, requirements_path);
-    this->create_cbt_plan(output_folder);
+    this->create_state_graph(output_path_bt_plans, requirements_path);
+    this->create_cbt_plan(output_path_bt_plans);
 }
 
 int conditioned_behavior_tree::get_max_length_sequence()
@@ -78,14 +77,12 @@ void conditioned_behavior_tree::compute_ex_times()
     this->root_->set_ex_time(0, this->root_);
 }
 
-void conditioned_behavior_tree::create_state_graph(std::string const output_folder, std::string const req_path)
+void conditioned_behavior_tree::create_state_graph(std::string const output_path_bt_plans, std::string const req_path)
 {
     simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::create_state_graph" << std::endl;
     
     std::ofstream file;
     file.exceptions (std::ofstream::failbit | std::ofstream::badbit );
-
-    std::string output_path_bt_plans = output_folder + name_path_bt_plans;
 
     file.open(output_path_bt_plans, std::ios::out);
     if (!file.good())
@@ -235,14 +232,12 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
     file.close();
 }
 
-void conditioned_behavior_tree::create_cbt_plan(std::string const output_folder)
+void conditioned_behavior_tree::create_cbt_plan(std::string const output_path_bt_plans)
 {
     simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::create_CBT_plan" << std::endl;
 
     std::ofstream file;
     file.exceptions (std::ofstream::failbit | std::ofstream::badbit );
-    
-    std::string output_path_bt_plans = output_folder + name_path_bt_plans;    
     file.open(output_path_bt_plans, std::ios::app);
 
     this->root_->get_plan(0, this->root_, file, &this->actions_);

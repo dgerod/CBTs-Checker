@@ -12,8 +12,8 @@
 #include "simple_logger.hpp"
 
 
-using namespace cbt;
-using cbt::utils::simple_logger;
+using namespace cbtc;
+using cbtc::utils::simple_logger;
 
 
 control_flow_node::control_flow_node()
@@ -76,7 +76,7 @@ std::tuple<int, int> control_flow_node::compute_node_params(int id)
 
     simple_logger(simple_logger::level::DEBUG) << "control_flow_node::compute_node_params" << std::endl;
 
-    if(this->get_type()==parallel)
+    if(this->get_type() == PARALLEL)
     {
         for(auto& child: this->get_children())
         {
@@ -123,12 +123,12 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
 
     this->has_children();
 
-    /*if (parent->get_type() == fallback){
+    /*if (parent->get_type() == FALLBACK){
         unsigned int no_ops_time = parent->get_sequence_length() - this->get_sequence_length();
         current_time += no_ops_time;
     }*/
     
-    if(this->get_type() == root)
+    if(this->get_type() == ROOT)
     {
         for(auto& c : this->get_children())
         {
@@ -137,7 +137,7 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
         return current_time;
     }
     
-    if (this->get_type() == sequence)
+    if (this->get_type() == SEQUENCE)
     {
         for(auto& c : this->get_children())
         {
@@ -146,7 +146,7 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
         return current_time;
     }
     
-    if (this->get_type() == fallback)
+    if (this->get_type() == FALLBACK)
     {
         for(auto& c : this->get_children())
         {
@@ -155,7 +155,7 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
         return current_time;/*+this->get_sequence_length();*/
     }
     
-    if (this->get_type() == parallel)
+    if (this->get_type() == PARALLEL)
     {
         for(auto& c : this->get_children())
         {
@@ -176,8 +176,9 @@ int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &f
     simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "node type: " << this->type_ << std::endl;
     
-    this->has_children();
-    if(this->get_type() == root)
+    (void) this->has_children();
+
+    if(this->get_type() == ROOT)
     {
         simple_logger(simple_logger::level::DEBUG) << "root" << std::endl;
 
@@ -188,7 +189,7 @@ int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &f
         return 0;
     }
     
-    if (this->get_type() == sequence)
+    if (this->get_type() == SEQUENCE)
     {
         simple_logger(simple_logger::level::DEBUG) << "sequence" << std::endl;
 
@@ -238,7 +239,7 @@ int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &f
         return current_time;
     }
     
-    if (this->get_type() == fallback)
+    if (this->get_type() == FALLBACK)
     {
         simple_logger(simple_logger::level::DEBUG) << "fallback" << std::endl;
 
@@ -303,7 +304,7 @@ int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &f
         return 0;
     }
 
-    if (this->get_type() == parallel)
+    if (this->get_type() == PARALLEL)
     {
         file << " & (eta_succ_" << this->get_identifier() << " -> " << "eta_try_" << this->get_identifier() << ")";
         file << " & (eta_succ_"<< this->get_identifier() << " <-> (";

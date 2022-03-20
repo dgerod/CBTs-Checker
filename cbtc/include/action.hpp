@@ -14,8 +14,8 @@
 #include <vector>
 
 
-namespace cbt{
-    
+namespace cbtc { 
+
 /** \brief Concrete class used to memorize an action and its pre-conditions and post-conditions. */
 class action
 {

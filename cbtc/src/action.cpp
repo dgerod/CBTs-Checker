@@ -9,7 +9,7 @@
 #include "action.hpp"
 
 
-using namespace cbt;
+using namespace cbtc;
 
 
 action::action(){

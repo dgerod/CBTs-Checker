@@ -12,15 +12,15 @@
 #include "simple_logger.hpp"
 
 
-using namespace cbt;
-using cbt::utils::simple_logger;
+using namespace cbtc;
+using cbtc::utils::simple_logger;
 
 
 execution_node::execution_node(std::string label)
 {
     action_label_ = label;
     sequence_length_ = 1;
-    type_ = execution;
+    type_ = EXECUTION;
 }
 
 std::string execution_node::get_action_label()
@@ -69,7 +69,7 @@ int execution_node::get_plan(int current_time, task* parent, std::ofstream &file
     file << " & (eta_succ_" << this->get_identifier() << " -> " << "eta_try_" << this->get_identifier() << ")";
     file << " & (eta_succ_"<< this->get_identifier() << " <-> " << this->get_action_label() << "_" << this->get_ex_time() << ")";
 
-    if (parent->get_type() != parallel)
+    if (parent->get_type() != PARALLEL)
     {
         file << " & (";
         unsigned int j = 0;

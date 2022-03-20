@@ -1,8 +1,10 @@
 #pragma once
 
+
 #include <iostream>
 
-namespace cbt { namespace utils {
+
+namespace cbtc { namespace utils {
 
 class simple_logger
 {

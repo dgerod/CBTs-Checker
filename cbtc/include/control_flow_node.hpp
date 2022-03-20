@@ -18,7 +18,7 @@
 #include "task.hpp"
 
 
-namespace cbt{
+namespace cbtc {
     
 /** \brief Concrete class implementing the behavior of a control flow node (internal node of the Behavior Tree). */
 class control_flow_node : public task 

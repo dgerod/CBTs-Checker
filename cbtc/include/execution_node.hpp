@@ -5,22 +5,20 @@
 //  Created by E.Giunchiglia on 30/05/18.
 //  Copyright © 2018 Eleonora Giunchiglia. All rights reserved.
 
-
 #pragma once
+
 
 #include <iostream>
 #include <stdio.h>
 #include <string>
 #include <set>
 #include <tuple>
-
 #include "task.hpp"
 
 
-namespace cbt{
+namespace cbtc {
 
 /** \brief Concrete class implementing the behavior of an execution node (leaf node of the Behavior Tree). */
-
 class execution_node : public task 
 {   
 public:    

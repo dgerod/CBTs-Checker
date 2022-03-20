@@ -14,12 +14,12 @@
 #include <set>
 #include <string>
 #include <vector>
-
 #include "action.hpp"
 
-namespace cbt{
+
+namespace cbtc {
     
-enum node_type {root, sequence, fallback, parallel, execution};
+enum node_type {ROOT, SEQUENCE, FALLBACK, PARALLEL, EXECUTION};
 
 /** \brief Abstract class representing a general node in the Conditioned Behavior Tree. */
 class task

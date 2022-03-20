@@ -12,8 +12,8 @@
 #include "simple_logger.hpp"
 
 
-using namespace cbt;
-using cbt::utils::simple_logger;
+using namespace cbtc;
+using cbtc::utils::simple_logger;
 
 
 task::~task() 

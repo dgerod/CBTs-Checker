@@ -12,28 +12,33 @@
 #include "simple_logger.hpp"
 
 
-using namespace cbt;
-using cbt::utils::simple_logger;
+using namespace cbtc;
+using cbtc::utils::simple_logger;
 
 
-conditioned_behavior_tree::conditioned_behavior_tree(){
-    this->root_ = new control_flow_node(root);
+conditioned_behavior_tree::conditioned_behavior_tree()
+{
+    this->root_ = new control_flow_node(ROOT);
     this->max_length_sequence_ = 0;
 }
 
-conditioned_behavior_tree::~conditioned_behavior_tree(){
+conditioned_behavior_tree::~conditioned_behavior_tree()
+{
     delete root_;
 }
 
-std::set<action> conditioned_behavior_tree::get_actions(){
+control_flow_node& conditioned_behavior_tree::get_root_node()
+{
+    return *this->root_;
+}
+
+std::set<action> conditioned_behavior_tree::get_actions()
+{
     return this->actions_;
 }
 
-int conditioned_behavior_tree::get_max_length_sequence(){
-    return this->max_length_sequence_;
-}
-
-void conditioned_behavior_tree::insert_action(action const * const new_action){
+void conditioned_behavior_tree::insert_action(action const* const new_action)
+{
     
     if(!this->actions_.insert(*new_action).second){
         std::cerr << "Warning: action " << new_action->get_label() << " specified more than one time in the XML file." <<std::endl;
@@ -41,216 +46,21 @@ void conditioned_behavior_tree::insert_action(action const * const new_action){
     }
 }
 
-// Function that ignores empty lines and whitespaces at the beginning of each
-// line. Takes as input the ifstream and returns the next full line.
-std::string conditioned_behavior_tree::get_next_line(std::ifstream * const file){
-    std::string line = "";
-    bool end_file = false;
-    while(line.length() == 0 and !end_file){
-        if(!file->eof()) {
-            std::getline(*file >> std::ws,line);
-        }
-        else
-            end_file = true;
-    }
-    return line;
-}
 
-// Function that, given a line, returns the cleaned action label.
-std::string conditioned_behavior_tree::read_action_label(std::string const line){
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
-    if (label.length()==0 || second_quotation_marks == std::string::npos)
-        throw std::runtime_error("Input XML file bad format: YARPAction must have identifier surrounded by quotation marks");
-    std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-    if(label.find(" ") != std::string::npos)
-        throw std::runtime_error("Input XML file bad format: YARPAction cannot contain whitespaces");
-    return label;
-}
-
-// Function that, given a line, returns the cleaned condition label.
-std::string conditioned_behavior_tree::read_condition_label(std::string const line){
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
-    if (label.length()==0 || second_quotation_marks == std::string::npos)
-        throw std::runtime_error("Input XML file bad format: Pre and Post conditions must have identifier surrounded by quotation marks");
-    std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-    if(label.substr(0,3).find("not")!=std::string::npos){
-        if(label.substr(4).find(" ") != std::string::npos){
-            throw std::runtime_error("Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces");
-        }
-        label = "!" + label.substr(4);
-    }else{
-        if(label.find(" ") != std::string::npos)
-            throw std::runtime_error("Input XML file bad format: positive Pre and Post conditions cannot contain whitespaces");
-    }
-    return label;
-}
-
-// Function processing and storing a single action
-void conditioned_behavior_tree::read_single_action(std::ifstream * const file){
-    action* new_action = new action();
-    
-    // Get the label of the action and check the input format
-    std::string line;
-    line = get_next_line(file);
-    if (line.substr(0,11).find("YARPAction") == std::string::npos)
-        throw std::runtime_error("Input XML file bad format: object ActionTemplate must contain object YARPAction");
-    
-    std::string action_label = read_action_label(line);
-    new_action->set_label(action_label);
-    
-    // Get the Pre-conditions of the action and check the input format
-    std::string pre_label;
-    line = get_next_line(file);
-    while(line.substr(0,13).find("Precondition") != std::string::npos){
-        pre_label = read_condition_label(line);
-
-        if(pre_label[0] == '!' && std::find(new_action->get_pre().begin(), new_action->get_pre().end(), pre_label.substr(1)) != new_action->get_pre().end()){
-            throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
-        }
-        
-        else if(pre_label[0] != '!' && (std::find(new_action->get_pre().cbegin(), new_action->get_pre().cend(), "!" + pre_label) != new_action->get_pre().cend())) {
-            throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
-        }
-        new_action->insert_pre(pre_label);
-        
-        line = get_next_line(file);
-    }
-        
-    //Get the Post-conditions of the action and check the input format
-    std::string post_label;
-    while(line.substr(0,14).find("Postcondition") != std::string::npos){
-        post_label = read_condition_label(line);
-        if(post_label[0] == '!' && std::find(new_action->get_post().begin(), new_action->get_post().end(), post_label.substr(1)) != new_action->get_post().end()){
-            throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
-        }
-        else if(post_label[0] != '!' && std::find(new_action->get_post().begin(), new_action->get_post().end(), ("!" + post_label)) != new_action->get_post().end()) {
-            throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
-        }
-        new_action->insert_post(post_label);
-        line = get_next_line(file);
-    }
-    
-    //Check end of the function
-    if (line.compare("</ActionTemplate>") != 0)
-        throw std::runtime_error("Input XML file bad format: object ActionTemplate must end with </ActionTemplate>");
-    
-    // Insert the new action in the list of actions
-    this->insert_action(new_action);
-}
-
-void conditioned_behavior_tree::read_execution_node(std::string line, control_flow_node * const parent){
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
-    std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-    action* dummy_action = new action();
-    dummy_action->set_label(label);
-    
-    if(line.find("YARPAction") != std::string::npos){
-        if(this->actions_.find(*dummy_action) == this->actions_.end())
-            throw std::runtime_error("Action not defined in the vocabulary");
-    }
-    if(line.find("YARPCondition") != std::string::npos){
-        this->insert_action(dummy_action);
-    }
-    execution_node* node = new execution_node(label);
-    parent->add(node);
-}
-
-std::string conditioned_behavior_tree::read_next_node(std::ifstream *const file, control_flow_node * const parent)
+void conditioned_behavior_tree::generate_initial_requirements(std::string const requirements_path, 
+std::string const output_folder) 
 {
-    std::string line = get_next_line(file);
-    if(line.find("YARP") != std::string::npos)
-    {
-        read_execution_node(line, parent);
-        if (parent->get_type() == root)
-            line = get_next_line(file);
-        return line;
-    }
-    else if(line.find("</") != std::string::npos)
-    {
-        return line;
-    }
-    else {
-        control_flow_node* node = new control_flow_node();
-        if(line.find("<Sequence>")!= std::string::npos)
-            node->set_type(sequence);
-        else if(line.find("<Fallback>")!= std::string::npos)
-            node->set_type(fallback);
-        else if(line.find("<Parallel>")!= std::string::npos)
-            node->set_type(parallel);
-        else
-            throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
-        parent->add(node);
-        
-        do {
-            line = read_next_node(file, node);
-        } while(line.find("YARP") != std::string::npos);
-        
-        // Check that the node is closed
-        if (node->get_type() == sequence && line.find("</Sequence>")== std::string::npos)
-                throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
-        else if (node->get_type() == fallback && line.find("</Fallback>") == std::string::npos)
-                throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
-        else if (node->get_type() == parallel && line.find("</Parallel>") == std::string::npos)
-                throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
-        
-        do {
-            line = read_next_node(file, parent);
-        } while(line.find("YARP") != std::string::npos);
-        
-        return line;
-    }
+    simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::compute_initial_requirements" << std::endl;
+
+    this->compute_length_sequences();
+    this->compute_ex_times();
+    this->create_state_graph(output_folder, requirements_path);
+    this->create_cbt_plan(output_folder);
 }
 
-void conditioned_behavior_tree::read_BT(std::ifstream *const file, std::string line)
+int conditioned_behavior_tree::get_max_length_sequence()
 {
-    simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::read_BT" << std::endl;
-
-    if (line.substr(0, 6).compare("<root>") != 0)
-    {
-        throw std::runtime_error("Input XML file bad format: Behavior Tree must have a root");
-    }
-    
-    std::string bt_line =get_next_line(file);
-    if (bt_line.substr(0, 14).compare("<BehaviorTree>") != 0)
-    {
-        throw std::runtime_error("Input XML file bad format: root must be followed by <BehaviorTree>");
-    }
-    line = read_next_node(file, root_);
-    if (line.substr(0, 15).compare("</BehaviorTree>") != 0)
-    {            
-        throw std::runtime_error("Input XML file bad format: object <Behavior Tree> must be closed");
-    }
-    line = get_next_line(file);
-    if (line.substr(0, 7).compare("</root>") != 0)
-    {
-        throw std::runtime_error("Input XML file bad format: object <root> must be closed");
-    }
-}
-
-// Function handling the pipeline necessary to read and check the input XML file.
-void conditioned_behavior_tree::read_file(std::string const path)
-{
-    simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::read_file" << std::endl;
-
-    std::ifstream file;
-    file.open(path);
-    if (!file.good())
-        throw std::runtime_error("Exception occurred while opening the file: input xml file not found.");
-
-    std::string line = get_next_line(&file);
-    while(line == "<ActionTemplate>")
-    {
-        read_single_action(&file);
-        line = get_next_line(&file);
-    }
-    
-    read_BT(&file, line);        
+    return this->max_length_sequence_;
 }
 
 void conditioned_behavior_tree::compute_length_sequences()
@@ -279,7 +89,9 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
 
     file.open(output_path_bt_plans, std::ios::out);
     if (!file.good())
+    {
         throw std::runtime_error("Exception occurred while creating output file for BT plans.");	
+    }
 
     // Define true and false symbols
     file << "true & !false &\n";
@@ -288,7 +100,9 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
     std::ifstream req_file;
     req_file.open(req_path);
     if (!req_file.good())
+    {
         throw std::runtime_error("Exception occurred while opening the file: input txt file with initial requirements not found.");
+    }
 
     std::string line = "";
     bool end_file = false;
@@ -299,7 +113,9 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
             std::getline(req_file >> std::ws,line);
         }
         else
+        {
             end_file = true;
+        }
 
         file << line;
     }
@@ -419,7 +235,7 @@ void conditioned_behavior_tree::create_state_graph(std::string const output_fold
     file.close();
 }
 
-void conditioned_behavior_tree::create_CBT_plan(std::string const output_folder)
+void conditioned_behavior_tree::create_cbt_plan(std::string const output_folder)
 {
     simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::create_CBT_plan" << std::endl;
 
@@ -433,16 +249,3 @@ void conditioned_behavior_tree::create_CBT_plan(std::string const output_folder)
     
     file.close();    
 }
-
-void conditioned_behavior_tree::compute_initial_requirements(std::string const input_path, 
-    std::string const input_req, std::string const output_folder) 
-{
-    simple_logger(simple_logger::level::DEBUG) << "conditioned_behavior_tree::compute_initial_requirements" << std::endl;
-
-    this->read_file(input_path);
-    this->compute_length_sequences();
-    this->compute_ex_times();
-    this->create_state_graph(output_folder, input_req);
-    this->create_CBT_plan(output_folder);
-}
-

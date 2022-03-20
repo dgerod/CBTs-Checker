@@ -15,7 +15,8 @@ add_executable(cbt_checker
 	cbtc/src/conditioned_behavior_tree.cpp 
 	cbtc/src/control_flow_node.cpp 
 	cbtc/src/execution_node.cpp 
-	cbtc/src/task.cpp)
+	cbtc/src/task.cpp
+	cbtc/src/tree_loader.cpp)
 
 add_executable(tests
 	test/test.cpp
@@ -30,4 +31,5 @@ add_executable(tests
 	cbtc/src/conditioned_behavior_tree.cpp 
 	cbtc/src/control_flow_node.cpp 
 	cbtc/src/execution_node.cpp 
-	cbtc/src/task.cpp)
+	cbtc/src/task.cpp
+	cbtc/src/tree_loader.cpp)

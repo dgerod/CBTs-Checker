@@ -11,11 +11,12 @@ include_directories(cbtc/include)
 add_executable(cbt_checker 
 	cbtc/src/main.cpp
 	cbtc/src/simple_logger.cpp 
-	cbtc/src/action.cpp 
-	cbtc/src/conditioned_behavior_tree.cpp 
-	cbtc/src/control_flow_node.cpp 
-	cbtc/src/execution_node.cpp 
 	cbtc/src/task.cpp
+	cbtc/src/action.cpp 	
+	cbtc/src/control_flow_node.cpp 
+	cbtc/src/execution_node.cpp 	
+	cbtc/src/conditioned_behavior_tree.cpp 
+	cbtc/src/cbt_validator.cpp
 	cbtc/src/tree_loader.cpp)
 
 add_executable(tests
@@ -27,9 +28,10 @@ add_executable(tests
 	test/test_strutturali/stage_5.cpp
 	test/test_funzionali/test_funzionali.cpp
 	cbtc/src/simple_logger.cpp 
-	cbtc/src/action.cpp 
-	cbtc/src/conditioned_behavior_tree.cpp 
-	cbtc/src/control_flow_node.cpp 
-	cbtc/src/execution_node.cpp 
 	cbtc/src/task.cpp
+	cbtc/src/action.cpp 	
+	cbtc/src/control_flow_node.cpp 
+	cbtc/src/execution_node.cpp 	
+	cbtc/src/conditioned_behavior_tree.cpp 
+	cbtc/src/cbt_validator.cpp
 	cbtc/src/tree_loader.cpp)

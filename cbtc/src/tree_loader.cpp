@@ -260,7 +260,7 @@ void read_bt(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file, st
     {
         throw std::runtime_error("Input XML file bad format: root must be followed by <BehaviorTree>");
     }
-    line = read_next_node(cbt, file, &cbt.get_root_node());
+    line = read_next_node(cbt, file, cbt.get_root_node());
     if (line.substr(0, 15).compare("</BehaviorTree>") != 0)
     {            
         throw std::runtime_error("Input XML file bad format: object <Behavior Tree> must be closed");

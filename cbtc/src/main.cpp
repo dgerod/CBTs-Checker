@@ -11,13 +11,13 @@
 #include <iostream>
 
 #include "conditioned_behavior_tree.hpp"
+#include "cbt_validator.hpp"
 #include "tree_loader.hpp"
 #include "simple_logger.hpp"
 
 
-const std::string bt_plans_file_name = "bt_plans.txt";
-const std::string general_requirements_file_name = "general_requirements.txt";
 const std::string RESULT_FILE_NAME = "cbt_valid.txt";   
+
 
 using cbtc::utils::simple_logger;
 
@@ -39,52 +39,6 @@ std::string get_next_line(std::ifstream* const file)
         }
     }
     return line;
-}
-
-bool find_text_in_file(const std::string file_path, const std::string text)
-{
-    bool found = false;
-
-    std::ifstream file;     
-    file.open(file_path);       
-   
-    std::string line;
-    line = get_next_line(&file);
-    simple_logger(simple_logger::level::DEBUG) << "Validation result: " << line << std::endl;
-    
-    if (line.find(text) != std::string::npos)
-    {
-        found = true;
-    }
-
-    file.close();
-    return found;
-}
-
-bool execute_limboole(const std::string limboole_path, const std::string output_path_bt_plans, const std::string output_path_gen_req){
-
-    std::string command = limboole_path + " -s " + output_path_bt_plans + ">> " + output_path_gen_req;
-
-    std::array<char, 128> buffer;
-    std::string result;    
-    FILE* pipe = popen(command.c_str(), "r");
-    
-    while (fgets(buffer.data(), 128, pipe) != NULL) 
-    {
-        result += buffer.data();
-    }
-    pclose(pipe);    
-
-    return find_text_in_file(output_path_gen_req, "SATISFIABLE");    
-}
-
-bool validate_cbt_plan(const std::string limboole_path, std::string const output_folder) 
-{
-    std::string output_path_bt_plans = output_folder + "/" + bt_plans_file_name;
-    std::string output_path_gen_req = output_folder + "/" + general_requirements_file_name;
-    
-    remove(output_path_gen_req.c_str());
-    return execute_limboole(limboole_path, output_path_bt_plans, output_path_gen_req);    
 }
 
 void write_result(std::string const output_folder, bool valid)
@@ -119,7 +73,7 @@ const std::string read_configuration(const std::string file_path)
 
 int main(int argc, const char * argv[]) 
 {
-    simple_logger::enabled_level_ = simple_logger::level::NONE;
+    simple_logger::enabled_level_ = simple_logger::level::DEBUG;
     
     if (argc != 5)
     {
@@ -150,10 +104,11 @@ int main(int argc, const char * argv[])
 
     try
     {
-        cbtc::conditioned_behavior_tree cbtree;    
-        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_tree_file);
-        cbtree.generate_initial_requirements(input_requirements_file, bt_plans_file_name);
-        valid = validate_cbt_plan(limboole_app_path, output_folder);
+        cbtc::conditioned_behavior_tree cbt;    
+        cbtc::tree_loader::bt_from_yarp_xml(cbt, input_tree_file);
+
+        cbtc::cbt_validator cbt_validator(limboole_app_path, output_folder);    
+        valid = cbt_validator.validate(cbt, input_requirements_file);
         write_result(output_folder, valid);
     }
     catch(const std::exception &e)

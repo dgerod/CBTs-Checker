@@ -169,7 +169,7 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
     }
 }
 
-int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &file, std::set<action> * const actions)
+int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &file, std::set<action>* const actions)
 {
     simple_logger(simple_logger::level::DEBUG) << "control_flow_node::get_plan" << std::endl;
 

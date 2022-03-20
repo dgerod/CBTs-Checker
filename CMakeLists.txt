@@ -21,7 +21,7 @@ add_executable(cbt_checker
 add_executable(tests
 	test/test.cpp
 	test/test_strutturali/load_bt_from_xml.cpp
-	test/test_strutturali/stage_2.cpp
+	test/test_strutturali/compute_sequence_length.cpp
 	test/test_strutturali/stage_3.cpp
 	test/test_strutturali/stage_4.cpp
 	test/test_strutturali/stage_5.cpp

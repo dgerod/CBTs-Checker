@@ -12,8 +12,6 @@ Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-
 ## TO DO
 
 - Fix tests because now they are failing
-- Add the possibility of additing initial conditions
-- Change readme and names of output files 
 
 ## Installation
 
@@ -46,46 +44,24 @@ In order to check the satisfiability of the propositional logic encoding, the ex
      * decompress the dowloaded file in the **same folder** in which the picosat folder is placed 
      * in the decompressed folder (limboole1.1) execute the command `./configure.sh && make`.
 
-## How to use it
+## Compile
 
-In order to deploy this program, open the Makefile in the folder CBT_Requirements_Calculator and set the following parameters:
-
-The parameter INFILE must be set equal to the string containg the path of the input file:
-
-`INFILE = "/path_to_the_input_file.xml"`
-
-The parameter OUTFOLDER must be set equal to the string containg the path of the folder in which you would like to save your output files. 
-
-`OUTFOLDER = "/path_to_the_output_folder"`
-
-The LIMBOOLEPATH  must be set equal to the string containg the path of the **executable limboole program**. 
-
-`LIMBOOLEPATH ="/path_to_the_limboole_executable"`
-
-Once the above parameters are set, execute `make run` and the output files will be generated in the folder specified by `OUTFOLDER`.
-
-The program can also be directly launched (from the bin folder if the command `make compile` has already been issued) with the following inputs (follow the order given below):
-- a string containing the path of the .xml input file,
-- a string containing the path of the folder in which the output files will be created, and
-- a string containing the path of the limboole executable program.
-
-### Output Files
-
-The program generates three files in the folder `./output`:
-- `BTplans.txt`: in this file the propositional logic representation of the CBT is written,
-- `general_requirements.txt`: the first line of this file declares if the representation contained in `BTplans.txt` is satisfiable; if that is the case it also shows a model of such representation, 
-- `initial_requirements.txt`: this file contains only the assignments of the variables corresponding to the initial time step (t=0).
-
-## Options
-
-If you want to delete the executable file and all the object files `.o` in the build folder issue the command `make clean`.
+CMake use is to build the application.
 
 ## Testing
 
 For the testing phase the framework catch2 (https://github.com/catchorg/Catch2) was deployed.
-The tool can be tested by executing the command:
 
-`make test`
+## How to use it
 
-in this way all the tests will be executed.
+Call cbt_checker build in "/bin" with the following parameters:
 
+- configuration file: a file where "limboole path" is stored
+- tree: a xml file representing the tree
+- initial state: a txt file with input requirements
+- output directory: directory where output files are stores
+
+First three parameters are inputs while last one is where the program generates the follwoing files:
+- `bt_plans.txt`: in this file the propositional logic representation of the CBT is written.
+- `general_requirements.txt`: the first line of this file declares if the representation contained in `bt_plans.txt` is satisfiable.If that is the case it also shows a model of such representation.
+- `cbt_valid.txt`: writes as YES/NO the result of validating the CBT.

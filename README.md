@@ -1,4 +1,4 @@
-# CBT Requirements Calculator
+# CBT Checker
 
 Given a Conditional Behavior Tree (CBT) this program is able to check its executability.
 

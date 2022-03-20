@@ -8,45 +8,49 @@
 #include "catch.hpp"
 
 #include "conditioned_behavior_tree.hpp"
+#include "tree_loader.hpp"
 
 
 SCENARIO("Test of the fourth stage of the pipeline: write on output file the representation of the CBT plans"){
     
-    cbt::conditioned_behavior_tree* cbtree = new cbt::conditioned_behavior_tree();
-    
     // First the function tries to open the file
     // We have to test that it raises an exception if it does not manage
     WHEN("The function cannot open the file"){
-        REQUIRE_THROWS(cbtree->create_CBT_plan("./not_existing_folder/"));
+        cbtc::conditioned_behavior_tree cbtree;        
+        REQUIRE_THROWS(cbtree.create_cbt_plan("./not_existing_folder/"));
     }
     
     // If it is called by a CFN then it tests if the CFN has children
     // We have to test the raise of the exception
     WHEN("The function can open the file and creates the representation of a CBT with CFN with no children"){
+            
+        cbtc::conditioned_behavior_tree cbtree;
         
         // Suppose the XML file has been read
-        cbtree->read_file("./test/test_strutturali/stage_4/complete_CBT_CFN_no_children.xml");
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/test_strutturali/stage_4/complete_CBT_CFN_no_children.xml");
         // that the sence lengths have been computed
-        cbtree->compute_length_sequences();
+        cbtree.compute_length_sequences();
         // and the state graph representation has been written on the file
-        cbtree->create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
+        cbtree.create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
         
-        REQUIRE_THROWS_WITH(cbtree->create_CBT_plan("./test/test_strutturali/stage_4/sym_output/"), "Exception occurred: control flow node without children");
+        REQUIRE_THROWS_WITH(cbtree.create_cbt_plan("./test/test_strutturali/stage_4/sym_output/"), "Exception occurred: control flow node without children");
     }
     
     // In order to test the raise of the exception of the parallel node, we need a CBT with a parallel node with CFN as children
     WHEN("The function can open the file and creates the representation of a CBT with parallel CFN as children"){
 
-        // Suppose the XML file has been read
-        cbtree->read_file("./test/test_strutturali/stage_4/complete_CBT_parallel_CFN_children.xml");
+        cbtc::conditioned_behavior_tree cbtree;
 
+        // Suppose the XML file has been read
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/test_strutturali/stage_4/complete_CBT_parallel_CFN_children.xml");
+        
         // that the sence lengths have been computed
-        cbtree->compute_length_sequences();
+        cbtree.compute_length_sequences();
 
         // and the state graph representation has been written on the file
-        cbtree->create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
+        cbtree.create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
         
-        REQUIRE_THROWS_WITH(cbtree->create_CBT_plan("./test/test_strutturali/stage_4/sym_output/"), "Input XML file bad format: parallel node children must be execution nodes");
+        REQUIRE_THROWS_WITH(cbtree.create_cbt_plan("./test/test_strutturali/stage_4/sym_output/"), "Input XML file bad format: parallel node children must be execution nodes");
     }
     
     // If the function manages to open the file then, in order to test all the branches,
@@ -56,16 +60,18 @@ SCENARIO("Test of the fourth stage of the pipeline: write on output file the rep
     //   3. A EN must be child of a fallback node and define a sequence shorter thant the parent
     WHEN("The function can open the file and creates the representation of the CBT plan"){
 
-        // Suppose the XML file has been read
-        cbtree->read_file("./test/test_strutturali/stage_4/complete_CBT.xml");
+        cbtc::conditioned_behavior_tree cbtree;
 
+        // Suppose the XML file has been read
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/test_strutturali/stage_4/complete_CBT.xml");
+       
         // that the sence lengths have been computed
-        cbtree->compute_length_sequences();
+        cbtree.compute_length_sequences();
 
         // and the state graph representation has been written on the file
-        cbtree->create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
+        cbtree.create_state_graph("./test/test_strutturali/stage_4/sym_output/", "./test/test_strutturali/stage_4/init_req.txt");
         
-        REQUIRE_NOTHROW(cbtree->create_CBT_plan("./test/test_strutturali/stage_4/sym_output/"));
+        REQUIRE_NOTHROW(cbtree.create_cbt_plan("./test/test_strutturali/stage_4/sym_output/"));
         
         std::ifstream CBT_plans("./test/test_strutturali/stage_4/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());

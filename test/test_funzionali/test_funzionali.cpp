@@ -3,11 +3,10 @@
 #include "catch.hpp"
 
 #include "conditioned_behavior_tree.hpp"
+#include "tree_loader.hpp"
 
 
 SCENARIO("The user wants to compute the initial requirements of a CBT given an illegal input"){
-
-    cbt::conditioned_behavior_tree* cbtree = new cbt::conditioned_behavior_tree();
     
     std::string input_path = "";
     std::string output_folder = "./test/test_funzionali/sym_output/";
@@ -17,9 +16,12 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
     WHEN("the input has no root"){
         std::string input_path = "./test/test_funzionali/illegal/req_f1_1.xml";
         std::string req_file = "";
-        
+
+        cbtc::conditioned_behavior_tree cbtree;       
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that the CBT must have a root"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: Behavior Tree must have a root");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: Behavior Tree must have a root");
         }
     }
     
@@ -27,8 +29,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f1_2.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;       
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that <root> is followed by <Behavior Tree>"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: root must be followed by <BehaviorTree>");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: root must be followed by <BehaviorTree>");
         }
     }
     
@@ -36,8 +41,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f1_3.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that the CBT is badly formatted"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: Behavior Tree bad format");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: Behavior Tree bad format");
         }
     }
     
@@ -45,8 +53,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f2_1.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that a CFN must have children"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Exception occurred: control flow node without children");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Exception occurred: control flow node without children");
         }
     }
     
@@ -54,8 +65,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f2_2.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that a CFN must have children"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Exception occurred: control flow node without children");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Exception occurred: control flow node without children");
         }
     }
     
@@ -63,8 +77,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f2_3.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that a CFN must have children"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Exception occurred: control flow node without children");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Exception occurred: control flow node without children");
         }
     }
     
@@ -72,8 +89,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f3_1.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that Pre and Post conditions should either contain no whitespaces or contain \"not \""){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces");
         }
     }
     
@@ -81,8 +101,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f3_2.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception saying that Pre and Post conditions should either contain no whitespaces or contain \"not \""){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: positive Pre and Post conditions cannot contain whitespaces");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: positive Pre and Post conditions cannot contain whitespaces");
         }
     }
     
@@ -90,8 +113,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f4_1.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that an action is not in the vocabulary"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Action not defined in the vocabulary");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Action not defined in the vocabulary");
         }
     }
     
@@ -99,8 +125,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f4_2.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that an action is not in the vocabulary"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Action not defined in the vocabulary");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Action not defined in the vocabulary");
         }
     }
     
@@ -108,8 +137,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f5.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree; 
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that a parallel node can have only EN as children"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: parallel node children must be execution nodes");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: parallel node children must be execution nodes");
         }
     }
     
@@ -117,8 +149,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f6.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that an action cannot have both c and not c as preconditions"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
         }
     }
     
@@ -126,8 +161,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f7.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that an action cannot have both c and not c as postconditions"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
         }
     }
     
@@ -135,35 +173,45 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given an i
         std::string input_path = "./test/test_funzionali/illegal/req_f8.xml";
         std::string req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("it should rise an exception stating that a parallel node cannot have children with contrastant post-conditions"){
-            REQUIRE_THROWS_WITH(cbtree->compute_initial_requirements(input_path, req_file, output_folder), "Input XML file bad format: children of parallel node cannot have contrastant post-conditions");
+            REQUIRE_THROWS_WITH(cbtree.generate_initial_requirements(req_file, output_folder), "Input XML file bad format: children of parallel node cannot have contrastant post-conditions");
         }
     }
     
     WHEN("the input presents two or more actions with the same label"){
         std::string input_path = "./test/test_funzionali/illegal/req_f9.xml";
+
+        cbtc::conditioned_behavior_tree cbtree;
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+
         THEN("only one must be memorized"){
-            REQUIRE(typeid(cbtree->get_actions())==typeid(std::set<cbt::action>));
+            REQUIRE(typeid(cbtree.get_actions())==typeid(std::set<cbtc::action>));
         }
     }
 }
 
 SCENARIO("The user wants to compute the initial requirements of a CBT given a legal input"){
-    
-    cbt::conditioned_behavior_tree* cbtree = new cbt::conditioned_behavior_tree();
-    
+        
     std::string input_path = "";
     std::string req_file = "";
     std::string output_folder = "./test/test_funzionali/sym_output/";
     std::string limboole_path = "../limboole1.1/limboole";
     
     WHEN("the input CBT contains only a action node"){
+        
         input_path = "./test/test_funzionali/legal/action_node.xml";
         req_file = "";
         
+        cbtc::conditioned_behavior_tree cbtree;
+        
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));        
         }
+
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         
@@ -186,12 +234,17 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
     }
     
     WHEN("the input CBT contains only a condition node"){
+        
         input_path = "./test/test_funzionali/legal/condition_node.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));        
         }
+        
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         
@@ -208,12 +261,17 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
     }
 
     WHEN("the input CBT contains only a fallback node"){
+        
         input_path = "./test/test_funzionali/legal/fallback_node.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+        
         THEN("no exception should be raised"){
-                REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));        
         }
+    
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         
@@ -225,11 +283,15 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
     }
     
     WHEN("the input CBT contains only a sequence node"){
+        
         input_path = "./test/test_funzionali/legal/sequence_node.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));                
         }
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
@@ -245,8 +307,11 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
         input_path = "./test/test_funzionali/legal/parallel_node_all_vocab.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));        
         }
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
@@ -259,12 +324,17 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
     }
 
     WHEN("the input CBT contains only a parallel node not containing all actions as children"){
+        
         input_path = "./test/test_funzionali/legal/parallel_node_not_all_vocab.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));
         }
+        
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         
@@ -276,12 +346,17 @@ SCENARIO("The user wants to compute the initial requirements of a CBT given a le
     }
     
     WHEN("the input CBT contains has 2 layers"){
+        
         input_path = "./test/test_funzionali/legal/2_layer_CBT.xml";
         req_file = "";
 
+        cbtc::conditioned_behavior_tree cbtree;
+
         THEN("no exception should be raised"){
-            REQUIRE_NOTHROW(cbtree->compute_initial_requirements(input_path, req_file, output_folder));
+            cbtc::tree_loader::bt_from_yarp_xml(cbtree, input_path);
+            REQUIRE_NOTHROW(cbtree.generate_initial_requirements(req_file, output_folder));
         }
+        
         std::ifstream CBT_plans("./test/test_funzionali/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         

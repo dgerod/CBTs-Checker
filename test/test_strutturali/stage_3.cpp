@@ -8,34 +8,33 @@
 #include "catch.hpp"
 
 #include "conditioned_behavior_tree.hpp"
+#include "tree_loader.hpp"
 
 
 SCENARIO("Test of the third stage of the pipeline: write on output file the representation of the state graph"){
     
-    cbt::conditioned_behavior_tree* cbtree = new cbt::conditioned_behavior_tree();
-    
-    // Suppose the XML file has been read
-    cbtree->read_file("./test/test_strutturali/stage_3/complete_CBT.xml");
+    cbtc::conditioned_behavior_tree cbtree;
 
+    // Suppose the XML file has been read    
+    cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/test_strutturali/stage_3/complete_CBT.xml");
     // and that the sence lengths have been computed
-    cbtree->compute_length_sequences();
+    cbtree.compute_length_sequences();
     
     //First the function tries to open the output file
     //If it is not possible than it raises an exceptio
     WHEN("It is not possibile to open the output file"){
-        REQUIRE_THROWS(cbtree->create_state_graph("./not_existing_folder/", "./not_existing_folder/"));
+        REQUIRE_THROWS(cbtree.create_state_graph("./not_existing_folder/", "./not_existing_folder/"));
     }
     
     // In the case it manages to open the file, in order to cover all branches we need:
     // 1. a CBT with two actions sharing the same pre or post condition
     // 2. a CBT containing both positive and negative pre and post conditions
     WHEN("We have a CBT with actions sharing pre and post conditions and containing positive and negative conditions"){
-        REQUIRE_NOTHROW(cbtree->create_state_graph("./test/test_strutturali/stage_3/sym_output/", "./test/test_strutturali/stage_3/sym_output/"));
+        REQUIRE_NOTHROW(cbtree.create_state_graph("./test/test_strutturali/stage_3/sym_output/", "./test/test_strutturali/stage_3/sym_output/"));
         std::ifstream CBT_plans("./test/test_strutturali/stage_3/sym_output/BTplans.txt");
         REQUIRE(CBT_plans.good());
         
         std::string line;
-        int num_of_lines = 0;
         
         getline(CBT_plans, line);
         REQUIRE(line == "(action1_0 -> (precondition_0 & precondition1_0)) & ");

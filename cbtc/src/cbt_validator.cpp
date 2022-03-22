@@ -78,8 +78,11 @@ bool validate_cbt_plan(const std::string limboole_path, std::string const output
     std::string general_requirements_file_path = output_folder + "/" + general_requirements_file_name;
         
     remove(general_requirements_file_path.c_str());
-    bool valid = execute_limboole(limboole_path, bt_plans_file_path, general_requirements_file_path);        
+    bool valid = execute_limboole(limboole_path, bt_plans_file_path, general_requirements_file_path);  
+
     return valid;
+}
+
 }
 
 cbt_validator::cbt_validator(const std::string limbool_app_path, const std::string output_folder)
@@ -179,9 +182,13 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
                 for(auto& pre: a.get_pre())
                 {
                     if(k < a.get_pre().size()-1)
+                    {
                          file << "!" <<  pre << "_" << i << " | ";
+                    }
                     else
+                    {
                         file << "!" <<  pre << "_" << i;
+                    }
                     k++;
                 }
                 file << ")) | \n";
@@ -203,9 +210,13 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
                 for(auto& post: a.get_post())
                 {
                     if(k < a.get_post().size()-1)
+                    {
                         file <<  post << "_" << (i+1) << " & ";
+                    }
                     else
+                    {
                         file <<  post << "_" << (i+1);
+                    }
                     k++;
                 }
                 file << ")) & \n";
@@ -252,23 +263,33 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
         {
             file << "(";
             if (pair.first.substr(0,1).compare("!") == 0)
+            {
                 file << pair.first.substr(1) << "_" << i << " & " << pair.first << "_" << i+1 << " -> (";
+            }
             else
+            {
                 file << "!" << pair.first << "_" << i << " & " << pair.first << "_" << i+1 << " -> (";
-        
+            }
+
             unsigned int j=0;
             for (auto& a : pair.second)
             {
                 if(j < pair.second.size()-1)
+                {
                     file << a << "_" << i << " | ";
+                }
                 else
+                {
                     file << a << "_" << i;
+                }
                 j++;
             }
     
             if(pair.second.size() == 0)
+            {
                 file << "false";            
-        
+            }
+
             file << ")) &\n";
         }
     }

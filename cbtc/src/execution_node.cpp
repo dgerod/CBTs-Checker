@@ -45,17 +45,17 @@ std::tuple<int, int> execution_node::compute_node_params(int id)
 
     simple_logger(simple_logger::level::DEBUG) << "execution_node::compute_node_params" << std::endl;
     
-    simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "node type: " << this->type_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "sequence length: " << this->sequence_length_ << std::endl;
+    simple_logger(simple_logger::level::INFO) << "node identifier: " << this->identifier_ << std::endl;
+    simple_logger(simple_logger::level::INFO) << " - node type: " << node_type_to_string(this->type_) << std::endl;
+    simple_logger(simple_logger::level::INFO) << " - sequence length: " << this->sequence_length_ << std::endl;
 
-    return  std::make_tuple(this->sequence_length_, this->identifier_);
+    return std::make_tuple(this->sequence_length_, this->identifier_);
 }
 
 int execution_node::set_ex_time(int current_time, task* parent)
 {
     this->ex_time_ = current_time;
-    return current_time+1;
+    return current_time + 1;
 }
 
 int execution_node::get_plan(int current_time, task* parent, std::ofstream &file, std::set<action> * const actions)
@@ -63,8 +63,9 @@ int execution_node::get_plan(int current_time, task* parent, std::ofstream &file
     simple_logger(simple_logger::level::DEBUG) << "execution_node::get_plan" << std::endl;
     
     simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "node type: " << this->type_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "action label: " << this->action_label_ << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - node type: " << node_type_to_string(this->type_) << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - sequence length: " << this->sequence_length_ << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - action label: " << this->action_label_ << std::endl;
 
     file << " & (eta_succ_" << this->get_identifier() << " -> " << "eta_try_" << this->get_identifier() << ")";
     file << " & (eta_succ_"<< this->get_identifier() << " <-> " << this->get_action_label() << "_" << this->get_ex_time() << ")";

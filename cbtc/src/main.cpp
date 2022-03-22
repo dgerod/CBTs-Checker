@@ -73,7 +73,7 @@ const std::string read_configuration(const std::string file_path)
 
 int main(int argc, const char * argv[]) 
 {
-    simple_logger::enabled_level_ = simple_logger::level::DEBUG;
+    simple_logger::enabled_level_ = simple_logger::level::INFO;
     
     if (argc != 5)
     {
@@ -117,6 +117,7 @@ int main(int argc, const char * argv[])
         exit(1);
     }
 
+    std::cout << std::endl;
     std::cout << "CBT is valid? " << (valid ? "YES" : "NO") << std::endl;
     return 0;
 }

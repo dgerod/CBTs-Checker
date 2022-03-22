@@ -95,24 +95,27 @@ std::tuple<int, int> control_flow_node::compute_node_params(int id)
         }
     }
     
-    /*
+    /*    
     else{
         int current_sequence_length = 0;
-        for (auto& child: this->get_children()){
-        std::tuple <int, int> dummy = child->compute_node_params(id+1);
+        for (auto& child: this->get_children())
+        {
+            std::tuple <int, int> dummy = child->compute_node_params(id+1);
             current_sequence_length = std::get<0>(dummy);
-    id = std::get<1>(dummy);
-            if(current_sequence_length > sequence_length)
+            id = std::get<1>(dummy);
+            if(current_sequence_length > sequence_length) 
+            {
                 sequence_length = current_sequence_length;
+            }
         }
     }
     */
     
     this->sequence_length_ = sequence_length;
     
-    simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "node type: " << this->type_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "sequence length: " << sequence_length << std::endl;
+    simple_logger(simple_logger::level::INFO) << "node identifier: " << this->identifier_ << std::endl;
+    simple_logger(simple_logger::level::INFO) << "  - node type: " << node_type_to_string(this->type_) << std::endl;
+    simple_logger(simple_logger::level::INFO) << "  - sequence length: " << sequence_length << std::endl;
 
     return  std::make_tuple(sequence_length, id);
 }
@@ -159,9 +162,9 @@ int control_flow_node::set_ex_time(int current_time, task* parent)
     {
         for(auto& c : this->get_children())
         {
-            c->set_ex_time(current_time, this);
+            (void) c->set_ex_time(current_time, this);
         }
-        return current_time+1;
+        return current_time + 1;
     }
     else
     {
@@ -174,8 +177,9 @@ int control_flow_node::get_plan(int current_time, task* parent, std::ofstream &f
     simple_logger(simple_logger::level::DEBUG) << "control_flow_node::get_plan" << std::endl;
 
     simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
-    simple_logger(simple_logger::level::DEBUG) << "node type: " << this->type_ << std::endl;
-    
+    simple_logger(simple_logger::level::DEBUG) << "  - node type: " << node_type_to_string(this->type_) << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - sequence length: " <<  this->sequence_length_ << std::endl;
+
     (void) this->has_children();
 
     if(this->get_type() == ROOT)

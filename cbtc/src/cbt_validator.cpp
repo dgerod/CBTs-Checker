@@ -82,8 +82,6 @@ bool validate_cbt_plan(const std::string limboole_path, std::string const output
     return valid;
 }
 
-}
-
 cbt_validator::cbt_validator(const std::string limbool_app_path, const std::string output_folder)
 {
     this->limboole_app_path_ = limbool_app_path;
@@ -103,8 +101,11 @@ bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::st
     simple_logger(simple_logger::level::DEBUG) << "initial state:  " <<  initial_requirements_path << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "output directory: " <<  this->output_folder_ << std::endl;
 
-    cbt.compute_length_sequences();
+    cbt.compute_length_sequences();    
     cbt.compute_ex_times();
+
+    simple_logger(simple_logger::level::INFO) << "Max sequence lenght: " << cbt.get_max_length_sequence() << std::endl;
+
     this->create_state_graph(cbt, initial_requirements_path, this->bt_plans_file_);
     this->create_cbt_plan(cbt, this->bt_plans_file_);
 
@@ -122,7 +123,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     file.open(bt_plans_file, std::ios::out);
     if (!file.good())
     {
-        throw std::runtime_error("Exception occurred while creating output file for BT plans.");	
+        throw std::runtime_error("ERROR: Exception occurred while creating output file for BT plans.");	
     }
 
     // Define true and false symbols
@@ -137,7 +138,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
         req_file.open(requirements_file);
         if (!req_file.good())
         {
-            throw std::runtime_error("Exception occurred while opening the file: initial requirements file not found.");
+            throw std::runtime_error("ERROR: Exception occurred while opening the file: initial requirements file not found.");
         }
 
         std::string line = "";
@@ -158,6 +159,10 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
 
         file << " &\n";
     }
+    else
+    {
+        throw std::runtime_error("ERROR: An initial requirements is mandatory.");
+    }
 
     // Write all the formulas of the state graph of the type:
     //  a_i & \big_wedge {\neg c_i | c \in Pre}
@@ -167,7 +172,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
         for(int i=0; i < cbt.get_max_length_sequence(); i++)
         {
             
-            if(a.get_pre().size()>0)
+            if(a.get_pre().size() > 0)
             {
                 unsigned int k = 0;
                 file << "(" << a.get_label() << "_" << i << " & (";
@@ -191,7 +196,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     {
         for(int i=0; i < cbt.get_max_length_sequence(); i++)
         {                   
-            if(a.get_post().size()>0)
+            if(a.get_post().size() > 0)
             {
                 unsigned int k=0;
                 file  << "(" << a.get_label() << "_" << i << " -> (";

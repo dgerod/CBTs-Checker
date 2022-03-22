@@ -122,7 +122,7 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
         line = get_next_line(file);
     }
         
-    //Get the Post-conditions of the action and check the input format
+    // Get the Post-conditions of the action and check the input format
     std::string post_label;
     while(line.substr(0,14).find("Postcondition") != std::string::npos)
     {
@@ -139,7 +139,7 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
         line = get_next_line(file);
     }
     
-    //Check end of the function
+    // Check end of the function
     if (line.compare("</ActionTemplate>") != 0)
     {
         throw std::runtime_error("Input XML file bad format: object ActionTemplate must end with </ActionTemplate>");

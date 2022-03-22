@@ -18,12 +18,13 @@ namespace cbtc {
 
 /** \brief Concrete class used to memorize an action and its pre-conditions and post-conditions. */
 class action
-{
+{     
+    friend bool operator<(action const& a, action const& b)
+    {
+        return a.label_.compare(b.label_) < 0;
+    };
+    
 public:
-    /**
-     * Constructor.
-     * Sets the label to the empty string, and pre and post to the empty vector.
-     */
     action();
     
     /**
@@ -58,11 +59,6 @@ public:
      * \param new_post string containing the post-condition to be inserted.
      */
     void insert_post(std::string new_post);
-    
-    //Overloaded operators
-    friend bool operator< (action const& a, action const& b){
-        return a.label_.compare(b.label_) < 0;
-    };
     
 private:
     /** Attribute representing the label of the action.*/

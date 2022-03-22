@@ -31,8 +31,8 @@
             <Sequence>
                 <YARPAction ID="FB"/>
                 <Parallel>
-                <YARPAction ID="TB"/>
-                <YARPAction ID="FeB"/>
+                    <YARPAction ID="TB"/>
+                    <YARPAction ID="FeB"/>
                 </Parallel>
             </Sequence>
             <YARPAction ID="AH"/>

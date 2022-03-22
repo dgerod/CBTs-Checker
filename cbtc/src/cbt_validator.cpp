@@ -66,7 +66,9 @@ bool execute_limboole(const std::string limboole_path, const std::string bt_plan
     }
     pclose(pipe);    
 
-    bool valid = find_text_in_file(general_requirmements_file, "SATISFIABLE");        
+    // The CBT is NOT valid if the problem is satifiable, SAT verify if exists one possible BT path is not respecting the constraints.
+    bool satisfiable = find_text_in_file(general_requirmements_file, "SATISFIABLE");        
+    bool valid = !satisfiable;
     simple_logger(simple_logger::level::DEBUG) << "Check if valid: " << valid << std::endl;
     return valid;
 }

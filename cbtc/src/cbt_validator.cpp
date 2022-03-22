@@ -96,7 +96,7 @@ cbt_validator::~cbt_validator()
 {
 }
 
-bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::string initial_requirements_path) 
+bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::string initial_requirements_path="") 
 {   
     simple_logger(simple_logger::level::DEBUG) << "cbt_validator::validate" << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "limboole app path: " <<  this->limboole_app_path_ << std::endl;    
@@ -129,31 +129,34 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     file << "true & !false &\n";
 
     // Open the input file with the requirements
-    std::ifstream req_file;
-    req_file.open(requirements_file);
-    if (!req_file.good())
+    if (!requirements_file.empty())
     {
-        throw std::runtime_error("Exception occurred while opening the file: input txt file with initial requirements not found.");
-    }
-
-    std::string line = "";
-    bool end_file = false;
-    while(line.length() == 0 and !end_file)
-    {
-        if(!req_file.eof()) 
+        std::ifstream req_file;
+        req_file.open(requirements_file);
+        if (req_file.good())
         {
-            std::getline(req_file >> std::ws,line);
-        }
-        else
-        {
-            end_file = true;
+            throw std::runtime_error("Exception occurred while opening the file: input txt file with initial requirements not found.");
         }
 
-        file << line;
+        std::string line = "";
+        bool end_file = false;
+        while(line.length() == 0 and !end_file)
+        {
+            if(!req_file.eof()) 
+            {
+                std::getline(req_file >> std::ws,line);
+            }
+            else
+            {
+                end_file = true;
+            }
+
+            file << line;
+        }
+
+        file << " &\n";
     }
 
-    file << " &\n";
-                
     // Write all the formulas of the state graph of the type:
     //  a_i & \big_wedge {\neg c_i | c \in Pre}
     file << "(";

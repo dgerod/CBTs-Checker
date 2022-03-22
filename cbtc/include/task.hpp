@@ -18,8 +18,9 @@
 
 
 namespace cbtc {
-    
-enum node_type {ROOT, SEQUENCE, FALLBACK, PARALLEL, EXECUTION};
+
+enum node_type { ROOT, SEQUENCE, FALLBACK, PARALLEL, EXECUTION };
+const char* node_type_to_string(enum node_type id);
 
 /** \brief Abstract class representing a general node in the Conditioned Behavior Tree. */
 class task

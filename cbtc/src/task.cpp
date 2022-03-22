@@ -16,6 +16,32 @@ using namespace cbtc;
 using cbtc::utils::simple_logger;
 
 
+const char* cbtc::node_type_to_string(enum node_type id)
+{
+    if (id == ROOT)
+    {
+        return "ROOT";
+    }
+    if (id == SEQUENCE)
+    {
+        return "SEQUENCE";
+    }    
+    if (id == FALLBACK)
+    {
+        return "FALLBACK";
+    }    
+    if (id == PARALLEL)
+    {
+        return "PARALLEL";
+    }  
+    if (id == EXECUTION)
+    {
+        return "EXECUTION";
+    }    
+
+    return "UNKNOWN";
+}
+
 task::~task() 
 {    
 }

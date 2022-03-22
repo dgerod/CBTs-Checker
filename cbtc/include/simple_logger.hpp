@@ -9,7 +9,7 @@ namespace cbtc { namespace utils {
 class simple_logger
 {
 public:
-    enum class level { NONE = 0, ERROR = 1, WARNING = 5, DEBUG = 10 };
+    enum class level { NONE = 0, ERROR = 1, WARNING = 5, INFO = 10, DEBUG = 20 };
     static level enabled_level_;
 
     simple_logger(level current_level);

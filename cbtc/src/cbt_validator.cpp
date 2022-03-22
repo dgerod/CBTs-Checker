@@ -96,7 +96,7 @@ cbt_validator::~cbt_validator()
 {
 }
 
-bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::string initial_requirements_path="") 
+bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::string initial_requirements_path) 
 {   
     simple_logger(simple_logger::level::DEBUG) << "cbt_validator::validate" << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "limboole app path: " <<  this->limboole_app_path_ << std::endl;    
@@ -114,7 +114,7 @@ bool cbt_validator::validate(cbtc::conditioned_behavior_tree& cbt, const std::st
 void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt, 
     const std::string requirements_file, const std::string bt_plans_file)
 {
-    simple_logger(simple_logger::level::DEBUG) << "cbt_validator::create_state_graph" << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "[cbt_validator::create_state_graph] BEGIN" << std::endl;
     
     std::ofstream file;
     file.exceptions (std::ofstream::failbit | std::ofstream::badbit );
@@ -129,13 +129,15 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     file << "true & !false &\n";
 
     // Open the input file with the requirements
+    simple_logger(simple_logger::level::DEBUG) << "Initial requirements: " << requirements_file << std::endl;
+
     if (!requirements_file.empty())
     {
         std::ifstream req_file;
         req_file.open(requirements_file);
-        if (req_file.good())
+        if (!req_file.good())
         {
-            throw std::runtime_error("Exception occurred while opening the file: input txt file with initial requirements not found.");
+            throw std::runtime_error("Exception occurred while opening the file: initial requirements file not found.");
         }
 
         std::string line = "";
@@ -268,6 +270,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     
     file.flush();
     file.close();
+    simple_logger(simple_logger::level::DEBUG) << "[cbt_validator::create_state_graph] END" << std::endl;
 }
 
 void cbt_validator::create_cbt_plan(cbtc::conditioned_behavior_tree& cbt, const std::string bt_plans_file)

@@ -51,18 +51,21 @@ CMake use is to build the application.
 
 For the testing phase the framework catch2 (https://github.com/catchorg/Catch2) was deployed.
 
-The test created binary application must be executed from the root directory as it looks for files inside "test" directory. that is: `.../cbt_checker$ ./bin/test`
+The *test* created binary application must be executed from the root directory as it looks for files inside "test" directory. that is: `.../cbt_checker$ ./bin/test`
 
 ## How to use it
 
-Call cbt_checker build in "/bin" with the following parameters:
+Call *cbt_checker* created applicaiton in "/bin" with the following parameters:
 
 - configuration file: a file where "limboole path" is stored
 - tree: a xml file representing the tree
 - initial state: a txt file with input requirements
-- output directory: directory where output files are stores
+- temporary directory: directory where internal files are stored
+- output directory: directory where output files are stored
 
-First three parameters are inputs while last one is where the program generates the follwoing files:
-- `bt_plans.txt`: in this file the propositional logic representation of the CBT is written.
-- `general_requirements.txt`: the first line of this file declares if the representation contained in `bt_plans.txt` is satisfiable.If that is the case it also shows a model of such representation.
+First three parameters are inputs while last one is where the program generates the follwoing file:
 - `cbt_valid.txt`: writes as YES/NO the result of validating the CBT.
+
+In the temporary directory the validator generates following  internal files:
+- `cbt_plans.txt`: in this file the propositional logic representation of the CBT is written.
+- `solver_results.txt`: the first line of this file declares if the representation contained in `cbt_plans.txt` is satisfiable or not.

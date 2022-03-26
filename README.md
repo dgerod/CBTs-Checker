@@ -21,9 +21,7 @@ Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-
 ##### Compile
 
 You will need the gcc compiler (with c++11 support) installed on your computer. 
-In order to check if you have gcc installed on your machine you can issue the command:
-
-`gcc --version`
+In order to check if you have gcc installed on your machine you can issue the command: `gcc --version`
 
 If the message  *command not found* appears that it means that gcc is not installed on your machine.  
 
@@ -52,6 +50,8 @@ CMake use is to build the application.
 ## Testing
 
 For the testing phase the framework catch2 (https://github.com/catchorg/Catch2) was deployed.
+
+The test created binary application must be executed from the root directory as it looks for files inside "test" directory. that is: `.../cbt_checker$ ./bin/test`
 
 ## How to use it
 

@@ -9,8 +9,8 @@ using cbtc::utils::simple_logger;
 
 namespace {
 
-const std::string bt_plans_file_name = "bt_plans.txt";
-const std::string general_requirements_file_name = "general_requirements.txt";
+const std::string bt_plans_file_name = "cbt_plans.txt";
+const std::string general_requirements_file_name = "solver_result.txt";
 
 std::string get_next_line(std::ifstream* const file)
 {
@@ -66,8 +66,18 @@ bool execute_limboole(const std::string limboole_path, const std::string bt_plan
     }
     pclose(pipe);    
 
-    // The CBT is NOT valid if the problem is satifiable, SAT verify if exists one possible BT path is not respecting the constraints.
-    bool satisfiable = find_text_in_file(general_requirmements_file, "SATISFIABLE");        
+    // The CBT is NOT valid if the problem is satifiable, SAT verify if exists one 
+    //  possible execution path of the CBT that is not respecting the constraints. So, the CBT is not valid.
+    bool invalid = find_text_in_file(general_requirmements_file, "INVALID");
+    bool satisfiable = find_text_in_file(general_requirmements_file, "SATISFIABLE");      
+    simple_logger(simple_logger::level::DEBUG) << "invalid: " << invalid << ", satisfiable: " << satisfiable << std::endl;
+
+    if (!satisfiable and !invalid)
+    {
+        simple_logger(simple_logger::level::ERROR) << "ERROR: Wrong SAT result file" << std::endl;
+        throw std::runtime_error("ERROR: Wrong SAT result file");	
+    }
+
     bool valid = !satisfiable;
     simple_logger(simple_logger::level::DEBUG) << "Check if valid: " << valid << std::endl;
     return valid;

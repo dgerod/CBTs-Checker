@@ -12,6 +12,7 @@ Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-
 ## TO DO
 
 - Fix tests because now they are failing
+- Allow that parallel nodes could have children that are not only execution nodes
 
 ## Installation
 

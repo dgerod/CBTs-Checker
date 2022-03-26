@@ -21,13 +21,6 @@
 </ActionTemplate>
 
 <ActionTemplate>
-<YARPAction ID = "FeB">
-<Precondition ID="rk">
-<Precondition ID="bl">
-<Postcondition ID="bf">
-</ActionTemplate>
-
-<ActionTemplate>
 <YARPAction ID = "AH">
 <Precondition ID="nh">
 </ActionTemplate>
@@ -56,7 +49,6 @@
 <Postcondition ID="bf">
 </ActionTemplate>
 
-
 <root>
     <BehaviorTree>
         <Fallback>
@@ -64,15 +56,14 @@
             	<YARPAction ID="GK"/>
                 <YARPAction ID="FB"/>
                 <Parallel>
-                <YARPAction ID="TB"/>
-                <YARPAction ID="FeB"/>
-                </Parallel>
-                <YARPAction ID="GK"/>
-                <YARPAction ID="FB"/>
-                <Parallel>
-                <YARPAction ID="TB"/>
-                <YARPAction ID="FeB"/>
-                </Parallel>
+                    <YARPAction ID="TB"/>
+                    <Sequence>
+                        <YARPAction ID="compute_pre_grasp_pose"/>
+                        <YARPAction ID="goto_pre_grasp_pose"/>
+                        <YARPAction ID="locate_bottle"/>
+                        <YARPAction ID="grasp_bottle"/>
+                    </Sequence>
+                </Parallel>                
             </Sequence>
             <YARPAction ID="AH"/>
         </Fallback>

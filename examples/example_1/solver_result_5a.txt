@@ -2,10 +2,10 @@
 true = 1
 false = 0
 nh_0 = 1
-rk_0 = 0
-bv_0 = 0
-bl_0 = 0
+rk_0 = 1
 bf_0 = 0
+bl_0 = 0
+bv_0 = 1
 ah_0 = 0
 ah_1 = 0
 nh_1 = 0

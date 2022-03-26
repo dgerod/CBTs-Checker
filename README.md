@@ -45,7 +45,7 @@ In order to check the satisfiability of the propositional logic encoding, the ex
 
 ## Compile
 
-CMake use is to build the application.
+CMake is used to build the application.
 
 ## Testing
 

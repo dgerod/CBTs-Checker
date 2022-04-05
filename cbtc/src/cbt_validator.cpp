@@ -68,18 +68,26 @@ bool execute_limboole(const std::string limboole_path, const std::string bt_plan
 
     // The CBT is NOT valid if the problem is satifiable, SAT verify if exists one 
     //  possible execution path of the CBT that is not respecting the constraints. So, the CBT is not valid.
-    bool invalid = find_text_in_file(general_requirmements_file, "INVALID");
-    bool satisfiable = find_text_in_file(general_requirmements_file, "SATISFIABLE");      
-    simple_logger(simple_logger::level::DEBUG) << "invalid: " << invalid << ", satisfiable: " << satisfiable << std::endl;
+    bool valid = false;
 
-    if (!satisfiable and !invalid)
+    if (find_text_in_file(general_requirmements_file, "UNSATISFIABLE"))
     {
-        simple_logger(simple_logger::level::ERROR) << "ERROR: Wrong SAT result file" << std::endl;
-        throw std::runtime_error("ERROR: Wrong SAT result file");	
+        valid = true;
     }
-
-    bool valid = !satisfiable;
-    simple_logger(simple_logger::level::DEBUG) << "Check if valid: " << valid << std::endl;
+    else
+    {
+        if (find_text_in_file(general_requirmements_file, "SATISFIABLE"))
+        {
+            valid = false;
+        }
+        else
+        {
+            simple_logger(simple_logger::level::ERROR) << "ERROR: Wrong SAT result file" << std::endl;
+            throw std::runtime_error("ERROR: Wrong SAT result file");	
+        }
+    }
+    
+    simple_logger(simple_logger::level::DEBUG) << "Is valid: " << valid << std::endl;
     return valid;
 }
 

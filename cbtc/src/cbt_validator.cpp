@@ -158,21 +158,24 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
 
         std::string line = "";
         bool end_file = false;
-        while(line.length() == 0 and !end_file)
+        
+        while (line.length() == 0 and !end_file)
         {
-            if(!req_file.eof()) 
+            if (!req_file.eof()) 
             {
-                std::getline(req_file >> std::ws,line);
+                std::getline(req_file >> std::ws, line);
+                file << line;
             }
             else
             {
                 end_file = true;
             }
-
-            file << line;
         }
 
-        file << " &\n";
+        if (line.length() != 0)
+        {
+            file << " &\n";
+        }
     }
     else
     {

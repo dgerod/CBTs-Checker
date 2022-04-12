@@ -21,12 +21,13 @@ add_executable(cbt_checker
 
 add_executable(tests
 	test/test.cpp
-	test/test_strutturali/load_bt_from_xml.cpp
-	test/test_strutturali/compute_sequence_length.cpp
-	test/test_strutturali/stage_3.cpp
-	test/test_strutturali/stage_4.cpp
-	test/test_strutturali/stage_5.cpp
-	test/test_funzionali/test_funzionali.cpp
+	test/load_bt_from_xml.cpp
+	#test/test_strutturali/load_bt_from_xml.cpp
+	#test/test_strutturali/compute_sequence_length.cpp
+	#test/test_strutturali/stage_3.cpp
+	#test/test_strutturali/stage_4.cpp
+	#test/test_strutturali/stage_5.cpp
+	#test/test_funzionali/test_funzionali.cpp
 	cbtc/src/simple_logger.cpp 
 	cbtc/src/task.cpp
 	cbtc/src/action.cpp 	

@@ -43,13 +43,11 @@ void control_flow_node::set_type(node_type type)
 
 std::vector<task*> control_flow_node::get_children()
 {    
-    simple_logger(simple_logger::level::DEBUG) << "control_flow_node::get_children" << std::endl;
     return children_;
 }
 
 int control_flow_node::get_identifier()
 {
-    simple_logger(simple_logger::level::DEBUG) << "control_flow_node::get_identifier" << std::endl;
     return this->identifier_;
 }
 
@@ -59,9 +57,7 @@ void control_flow_node::add(task * const child)
 };
 
 bool control_flow_node::has_children()
-{
-    simple_logger(simple_logger::level::DEBUG) << "execution_node::has_children" << std::endl;
-
+{    
     if(this->children_.size() == 0)
     {
         throw std::runtime_error("Exception occurred: control flow node without children");
@@ -71,11 +67,11 @@ bool control_flow_node::has_children()
 
 std::tuple<int, int> control_flow_node::compute_node_params(int id)
 {
+    simple_logger(simple_logger::level::DEBUG) << "execution_node::compute_node_params" << std::endl;
+        
     int sequence_length = 0;
     this->identifier_ = id;
-
-    simple_logger(simple_logger::level::DEBUG) << "control_flow_node::compute_node_params" << std::endl;
-
+    
     if(this->get_type() == PARALLEL)
     {
         for(auto& child: this->get_children())
@@ -122,8 +118,6 @@ std::tuple<int, int> control_flow_node::compute_node_params(int id)
 
 int control_flow_node::set_ex_time(int current_time, task* parent)
 {
-    simple_logger(simple_logger::level::DEBUG) << "execution_node::set_ex_time" << std::endl;
-
     this->has_children();
 
     /*if (parent->get_type() == FALLBACK){

@@ -29,8 +29,7 @@ std::string execution_node::get_action_label()
 }
 
 int execution_node::get_identifier()
-{
-    simple_logger(simple_logger::level::DEBUG) << "execution_node::get_identifier" << std::endl;
+{    
     return this->identifier_;
 }
 
@@ -68,7 +67,7 @@ int execution_node::get_plan(int current_time, task* parent, std::ofstream &file
     simple_logger(simple_logger::level::DEBUG) << "  - action label: " << this->action_label_ << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "  - num actions: " << actions->size() << std::endl;
     simple_logger(simple_logger::level::DEBUG) << "  - parent type: " << parent->get_type() << std::endl;
-
+    
     file << " & (eta_succ_" << this->get_identifier() << " -> " << "eta_try_" << this->get_identifier() << ")";
     file << " & (eta_succ_"<< this->get_identifier() << " <-> " << this->get_action_label() << "_" << this->get_ex_time() << ")";
 

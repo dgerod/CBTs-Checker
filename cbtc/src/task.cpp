@@ -53,7 +53,6 @@ int task::get_sequence_length()
 
 std::vector<task*> task::get_children()
 {
-    simple_logger(simple_logger::level::DEBUG) << "task::get_identifier" << std::endl;
     return std::vector<task*>();
 }
 

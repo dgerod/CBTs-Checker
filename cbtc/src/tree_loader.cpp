@@ -253,8 +253,7 @@ void read_bt(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file, st
     if (line.substr(0, 6).compare("<root>") != 0)
     {
         throw std::runtime_error("Input XML file bad format: Behavior Tree must have a root");
-    }
-    
+    }    
     std::string bt_line = get_next_line(file);
     if (bt_line.substr(0, 14).compare("<BehaviorTree>") != 0)
     {
@@ -272,6 +271,95 @@ void read_bt(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file, st
     }
 }
 
+bool validate_parallel_with_execute_nodes(cbtc::task& node)
+{
+    bool valid = true;
+
+    if(node.get_type() == PARALLEL)
+    {
+        for(auto& c : node.get_children())
+        {
+            valid = valid and c->get_type() == EXECUTION;
+        }
+    }
+
+    return valid;
+}
+
+bool validate_node_rules(cbtc::task& node, int id)
+{
+    bool valid = false;
+    
+    simple_logger(simple_logger::level::DEBUG) << "node"  << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - node id: " << id << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "  - node type: " << node_type_to_string(node.get_type()) << std::endl;
+    
+    if(node.get_type() == ROOT)
+    {
+        valid = node.get_children().size() == 1;
+        
+        simple_logger(simple_logger::level::DEBUG) << "  - num children: " << node.get_children().size() << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "  - valid: " << valid << std::endl;
+    }
+    
+    if(node.get_type() == FALLBACK || node.get_type() == SEQUENCE)
+    {
+        valid = node.get_children().size() > 1;
+
+        simple_logger(simple_logger::level::DEBUG) << "  - num children: " << node.get_children().size() << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "  - valid: " << valid << std::endl;
+    }
+    
+    if(node.get_type() == PARALLEL)
+    {
+        bool are_execution_nodes = validate_parallel_with_execute_nodes(node);
+        valid = node.get_children().size() > 1 and are_execution_nodes;
+
+        simple_logger(simple_logger::level::DEBUG) << "  - num children: " << node.get_children().size() << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "  - execution nodes: " << are_execution_nodes << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "  - valid: " << valid << std::endl;
+    }
+    
+    if(node.get_type() == EXECUTION)
+    {
+        valid = node.has_children() == false;
+        
+        simple_logger(simple_logger::level::DEBUG) << "  - action label: " << static_cast<execution_node&>(node).get_action_label() << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "  - valid: " << valid << std::endl;
+    }
+
+    return valid;
+}
+
+bool validate_node(cbtc::task& node, int& id)
+{
+    if (validate_node_rules(node, id))
+    {
+        for(auto& c : node.get_children())
+        {
+            id++;
+            if (!validate_node(*c, id))
+            {
+                return false;            
+            }
+        }
+        
+        return true;
+    }
+
+    return false;
+}
+
+bool validate_bt(cbtc::conditioned_behavior_tree& cbt)
+{
+    // Rules:
+    //  - Fallback, sequence and paralle ndoes must have more two children at least.
+    //  - Children of parallel node must be execution nodes.
+    cbtc::task* node = cbt.get_root_node();
+    int id = 0;
+    return validate_node(*node, id);
+}
+
 }
 
 namespace cbtc { namespace tree_loader {
@@ -279,6 +367,8 @@ namespace cbtc { namespace tree_loader {
 void bt_from_yarp_xml(cbtc::conditioned_behavior_tree& cbt, const std::string path)
 {
     simple_logger(simple_logger::level::DEBUG) << "bt_from_yarp_xml" << std::endl;
+
+    simple_logger(simple_logger::level::DEBUG) << "read input file" << std::endl;
 
     std::ifstream file;
     file.open(path);
@@ -289,6 +379,16 @@ void bt_from_yarp_xml(cbtc::conditioned_behavior_tree& cbt, const std::string pa
 
     std::string line = read_actions(cbt, &file); 
     read_bt(cbt, &file, line);     
+    
+    simple_logger(simple_logger::level::DEBUG) << "validate cbt" << std::endl;
+
+    bool format_valid = validate_bt(cbt);
+    simple_logger(simple_logger::level::DEBUG) << "cbt well formated? " << format_valid << std::endl;
+
+    if (!format_valid)
+    {       
+        throw std::runtime_error("Tree in input xml file is not well formated."); 
+    }
 }
 
 void bt_from_sbt_file(cbtc::conditioned_behavior_tree& cbt, const std::string path)

@@ -76,6 +76,34 @@ SCENARIO("BT is NOT valid")
             REQUIRE_FALSE(validator.validate(cbtree, init_state_file));
         }
     }
-   
-  
+       
+    WHEN("Tree 2")
+    {
+        std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_2.xml";
+        std::string init_state_file = "./test/data/check_bt_valid/no_valid/init_state.txt";
+
+        cbtc::conditioned_behavior_tree cbtree;       
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, tree_file);
+        
+        THEN("NOT valid")
+        {
+            cbtc::cbt_validator validator(LIMBOOLE_PATH, TMP_DIRECTORY);            
+            REQUIRE_FALSE(validator.validate(cbtree, init_state_file));
+        }
+    }
+        
+    WHEN("Tree 3")
+    {
+        std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_3.xml";
+        std::string init_state_file = "./test/data/check_bt_valid/no_valid/init_state.txt";
+
+        cbtc::conditioned_behavior_tree cbtree;       
+        cbtc::tree_loader::bt_from_yarp_xml(cbtree, tree_file);
+        
+        THEN("NOT valid")
+        {
+            cbtc::cbt_validator validator(LIMBOOLE_PATH, TMP_DIRECTORY);            
+            REQUIRE_FALSE(validator.validate(cbtree, init_state_file));
+        }
+    }  
 }

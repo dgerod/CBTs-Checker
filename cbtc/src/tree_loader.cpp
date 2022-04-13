@@ -353,7 +353,7 @@ bool validate_node(cbtc::task& node, int& id)
 bool validate_bt(cbtc::conditioned_behavior_tree& cbt)
 {
     // Rules:
-    //  - Fallback, sequence and paralle ndoes must have more two children at least.
+    //  - Fallback, sequence and parallel must have more two children at least.
     //  - Children of parallel node must be execution nodes.
     cbtc::task* node = cbt.get_root_node();
     int id = 0;

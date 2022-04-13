@@ -1,0 +1,51 @@
+<ActionTemplate>
+    <YARPAction ID = "DO_RP_A">
+    <Postcondition ID = "place_A_exists">
+</ActionTemplate>
+
+<ActionTemplate>
+    <YARPAction ID = "DO_RP_B">
+    <Postcondition ID = "place_B_exists">
+</ActionTemplate>
+
+<ActionTemplate>
+    <YARPAction ID = "DO_MT_A">
+    <Precondition ID = "place_A_exists">
+    <Postcondition ID = "in_place_A">
+</ActionTemplate>
+
+<ActionTemplate>
+    <YARPAction ID = "DO_MT_B">
+    <Precondition ID = "place_B_exists">
+    <Postcondition ID = "in_place_B">
+</ActionTemplate>
+
+<ActionTemplate>
+    <YARPAction ID = "DO_FO_A">
+    <Precondition ID = "in_place_A">
+    <Postcondition ID = "object_located">
+</ActionTemplate>
+
+<ActionTemplate>
+    <YARPAction ID = "DO_FO_B">
+    <Precondition ID = "in_place_B">
+    <Postcondition ID = "object_located">
+</ActionTemplate>
+
+<root>
+    <BehaviorTree>
+        <Fallback>
+            <Sequence>
+                <YARPAction ID = "DO_RP_A"/>
+                <YARPAction ID = "DO_MT_A"/>
+                <YARPAction ID = "DO_FO_A"/>
+            </Sequence>
+            <Sequence>
+                <YARPAction ID = "DO_RP_B"/>
+                <YARPAction ID = "DO_MT_B"/>
+                <YARPAction ID = "DO_FO_B"/>
+            </Sequence>
+        </Fallback>
+    </BehaviorTree>
+</root>
+

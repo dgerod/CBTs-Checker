@@ -1,0 +1,10 @@
+<ActionTemplate>
+    <YARPAction ID = "Action1">
+
+</ActionTemplate>
+
+<root>
+    <BehaviorTree>
+        <YARPAction ID = "Action1"/>
+    </BehaviorTree>
+</root>

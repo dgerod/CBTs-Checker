@@ -1,6 +1,6 @@
 # Conditional Behavior Tree Checker
 
-Given a Conditional Behavior Tree (CBT) this program is able to check its executability.
+Given a Conditional Behavior Tree (CBT) this program is able to check its executability... if it is valid or not.
 
 References:
 

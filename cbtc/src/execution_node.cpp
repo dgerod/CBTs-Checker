@@ -53,8 +53,15 @@ std::tuple<int, int> execution_node::compute_node_params(int id)
 
 int execution_node::set_ex_time(int current_time, task* parent)
 {
+    simple_logger(simple_logger::level::DEBUG) << "execution_node::set_ex_time" << std::endl;
+    
     this->ex_time_ = current_time;
     return current_time + 1;
+
+    //simple_logger(simple_logger::level::DEBUG) << "node identifier: " << this->identifier_ << std::endl;
+    //simple_logger(simple_logger::level::DEBUG) << "  - ex time: " << new_time << std::endl;
+
+    //return new_time;
 }
 
 int execution_node::get_plan(int current_time, task* parent, std::ofstream &file, std::set<action>* const actions)
@@ -88,29 +95,32 @@ int execution_node::get_plan(int current_time, task* parent, std::ofstream &file
             }            
         }
 
-        simple_logger(simple_logger::level::DEBUG) << "filtered actions: ";
+        simple_logger(simple_logger::level::DEBUG) << "non filtered actions: ";
         for (auto& a : filtered_actions) {
             simple_logger(simple_logger::level::DEBUG) << a.get_label() << ", ";
         }
         simple_logger(simple_logger::level::DEBUG) << std::endl;
 
-        file << " & (";
-        unsigned int j = 0;
-        for(auto& a : filtered_actions)
-        {            
-            if (j < filtered_actions.size()-1)
-            {                
-                file << "!" << a.get_label() << "_" << this->get_ex_time() << " & ";
+        if (!filtered_actions.empty())
+        {
+            file << " & (";
+            unsigned int j = 0;
+            for(auto& a : filtered_actions)
+            {            
+                if (j < filtered_actions.size()-1)
+                {                
+                    file << "!" << a.get_label() << "_" << this->get_ex_time() << " & ";
+                }
+                else
+                {
+                    file << "!" << a.get_label() << "_" << this->get_ex_time();
+                }
+                j++;
             }
-            else
-            {
-                file << "!" << a.get_label() << "_" << this->get_ex_time();
-            }
-            j++;
+            
+            file << ")";
         }
-        
-        file << ")";
     }  
     
-    return current_time+1;
+    return current_time + 1;
 }

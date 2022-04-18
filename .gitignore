@@ -1,3 +1,5 @@
-build/
 bin/
+build/
+dependencies/
+test/_temp_/
 .o

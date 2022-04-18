@@ -50,11 +50,11 @@ SCENARIO("BT is valid")
             REQUIRE(validator.validate(cbtree, init_state_file));
         }
     }
-    
+
     WHEN("Tree 2")
     {
         const std::string tree_file = DATA_DIRECTORY + "/valid/tree_2.xml";
-        const std::string init_state_file = DATA_DIRECTORY + "/valid/empty_state.txt";        
+        const std::string init_state_file = DATA_DIRECTORY + "/valid/tree_2.txt";        
         const std::string tmp_directory = TMP_DIRECTORY + "/valid/2";
 
         create_directory(tmp_directory);
@@ -68,7 +68,7 @@ SCENARIO("BT is valid")
             REQUIRE(validator.validate(cbtree, init_state_file));
         }
     } 
-
+   
     WHEN("Tree 3")
     {
         const std::string tree_file = DATA_DIRECTORY + "/valid/tree_3.xml";
@@ -127,7 +127,7 @@ SCENARIO("BT is NOT valid")
             REQUIRE_FALSE(validator.validate(cbtree, init_state_file));
         }
     }
-    
+
     WHEN("Tree 3")
     {
         const std::string tree_file = DATA_DIRECTORY + "/no_valid/tree_3.xml";

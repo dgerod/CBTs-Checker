@@ -1,12 +1,24 @@
 #include <stdio.h>
 #include <boost/filesystem.hpp> 
+#include <boost/tuple/tuple.hpp>
 
 #include "catch.hpp"
 #include "simple_logger.hpp"
+#include "read_configuration.hpp"
 
 #include "tree_loader.hpp"
 #include "cbt_validator.hpp"
 #include "conditioned_behavior_tree.hpp"
+
+
+const std::string TEST_ROOT_DIRECTORY = "./test";
+const std::string CONFIG_FILE_PATH = "./config.txt";
+
+const std::string DATA_DIRECTORY = TEST_ROOT_DIRECTORY + "/data/check_bt_valid";
+const std::string TMP_DIRECTORY = TEST_ROOT_DIRECTORY + "/_temp_/check_bt_valid";
+const cbtc::utils::configuration_params CONFIG_PARAMS = cbtc::utils::read_configuration(CONFIG_FILE_PATH);
+const std::string LIMBOOLE_PATH = boost::get<0>(CONFIG_PARAMS);
+const cbtc::utils::simple_logger::level LOGGER_LEVEL = boost::get<1>(CONFIG_PARAMS);
 
 
 void create_directory(const std::string path)
@@ -17,51 +29,14 @@ void create_directory(const std::string path)
     }    
 }
 
-std::string get_next_line(std::ifstream* const file)
-{
-    std::string line = "";
-    bool end_file = false;
-
-    while(line.length() == 0 and !end_file)
-    {
-        if(!file->eof()) 
-        {
-            std::getline(*file >> std::ws,line);
-        }
-        else
-        {
-            end_file = true;
-        }
-    }
-    return line;
-}
-
-const std::string read_configuration(const std::string file_path)
-{
-    std::ifstream file;     
-    file.open(file_path);       
-   
-    std::string line;
-    line = get_next_line(&file);
-    std::string limboole_path = line;
-
-    file.close();
-    return limboole_path;
-}
-
-const std::string CONFIG_FILE_PATH = "./test/config.txt";
-const std::string LIMBOOLE_PATH = read_configuration(CONFIG_FILE_PATH);
-const std::string TMP_DIRECTORY = "./test/_temp_/check_bt_valid";
-
 SCENARIO("BT is valid")
 {    
-    using cbtc::utils::simple_logger;
-    simple_logger::enabled_level_ = simple_logger::level::ERROR;
+    cbtc::utils::simple_logger::enabled_level_ = LOGGER_LEVEL;
 
     WHEN("Tree 1")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/valid/tree_1.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/valid/empty_state.txt";
+        const std::string tree_file = DATA_DIRECTORY + "/valid/tree_1.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/valid/empty_state.txt";
         const std::string tmp_directory = TMP_DIRECTORY + "/valid/1";
 
         create_directory(tmp_directory);
@@ -78,8 +53,8 @@ SCENARIO("BT is valid")
     
     WHEN("Tree 2")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/valid/tree_2.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/valid/empty_state.txt";        
+        const std::string tree_file = DATA_DIRECTORY + "/valid/tree_2.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/valid/empty_state.txt";        
         const std::string tmp_directory = TMP_DIRECTORY + "/valid/2";
 
         create_directory(tmp_directory);
@@ -96,8 +71,8 @@ SCENARIO("BT is valid")
 
     WHEN("Tree 3")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/valid/tree_3.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/valid/empty_state.txt";        
+        const std::string tree_file = DATA_DIRECTORY + "/valid/tree_3.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/valid/empty_state.txt";        
         const std::string tmp_directory = TMP_DIRECTORY + "/valid/3";
 
         create_directory(tmp_directory);
@@ -115,13 +90,12 @@ SCENARIO("BT is valid")
 
 SCENARIO("BT is NOT valid")
 {
-    using cbtc::utils::simple_logger;
-    simple_logger::enabled_level_ = simple_logger::level::DEBUG;
+    cbtc::utils::simple_logger::enabled_level_ = LOGGER_LEVEL;
 
     WHEN("Tree 1")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_1.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/no_valid/empty_state.txt";        
+        const std::string tree_file = DATA_DIRECTORY + "/no_valid/tree_1.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/no_valid/empty_state.txt";        
         const std::string tmp_directory = TMP_DIRECTORY + "/no_valid/1";
 
         create_directory(tmp_directory);
@@ -138,8 +112,8 @@ SCENARIO("BT is NOT valid")
        
     WHEN("Tree 2")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_2.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/no_valid/empty_state.txt";
+        const std::string tree_file = DATA_DIRECTORY + "/no_valid/tree_2.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/no_valid/empty_state.txt";
         const std::string tmp_directory = TMP_DIRECTORY + "/no_valid/2";
 
         create_directory(tmp_directory);
@@ -156,8 +130,8 @@ SCENARIO("BT is NOT valid")
     
     WHEN("Tree 3")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_3.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/no_valid/empty_state.txt";
+        const std::string tree_file = DATA_DIRECTORY + "/no_valid/tree_3.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/no_valid/empty_state.txt";
         const std::string tmp_directory = TMP_DIRECTORY + "/no_valid/3";
 
         create_directory(tmp_directory);
@@ -174,8 +148,8 @@ SCENARIO("BT is NOT valid")
  
     WHEN("Tree 4")
     {
-        const std::string tree_file = "./test/data/check_bt_valid/no_valid/tree_4.xml";
-        const std::string init_state_file = "./test/data/check_bt_valid/no_valid/empty_state.txt";
+        const std::string tree_file = DATA_DIRECTORY + "/no_valid/tree_4.xml";
+        const std::string init_state_file = DATA_DIRECTORY + "/no_valid/empty_state.txt";
         const std::string tmp_directory = TMP_DIRECTORY + "/no_valid/4";
 
         create_directory(tmp_directory);

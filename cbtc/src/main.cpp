@@ -9,37 +9,17 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <boost/tuple/tuple.hpp>
 
+#include "simple_logger.hpp"
+#include "read_configuration.hpp"
 #include "conditioned_behavior_tree.hpp"
 #include "cbt_validator.hpp"
 #include "tree_loader.hpp"
-#include "simple_logger.hpp"
 
 
 const std::string RESULT_FILE_NAME = "cbt_valid.txt";   
 
-
-using cbtc::utils::simple_logger;
-
-
-std::string get_next_line(std::ifstream* const file)
-{
-    std::string line = "";
-    bool end_file = false;
-
-    while(line.length() == 0 and !end_file)
-    {
-        if(!file->eof()) 
-        {
-            std::getline(*file >> std::ws,line);
-        }
-        else
-        {
-            end_file = true;
-        }
-    }
-    return line;
-}
 
 void write_result(std::string const output_folder, bool valid)
 {
@@ -58,27 +38,12 @@ void write_result(std::string const output_folder, bool valid)
     file.close();
 }
 
-const std::string read_configuration(const std::string file_path)
-{
-    std::ifstream file;     
-    file.open(file_path);       
-   
-    std::string line;
-    line = get_next_line(&file);
-    std::string limboole_path = line;
-
-    file.close();
-    return limboole_path;
-}
-
 int main(int argc, const char * argv[]) 
-{
-    simple_logger::enabled_level_ = simple_logger::level::INFO;
-    
+{    
     if (argc != 6)
     {
         std::cerr << "Input Error: expected 4 inputs to the program\n";
-        std::cout << "  configuration file" << std::endl;
+        std::cout << "  configuration file" << std::endl;        
         std::cout << "  tree" << std::endl;
         std::cout << "  initial state" << std::endl;
         std::cout << "  temp directory" << std::endl;
@@ -86,12 +51,15 @@ int main(int argc, const char * argv[])
         
         return 1;
     }
-    
-    std::string limboole_app_path = read_configuration(argv[1]);
-    std::string input_tree_file = argv[2];
-    std::string input_requirements_file = argv[3]; 
-    std::string temp_folder = argv[4];
-    std::string output_folder = argv[5];
+
+    const cbtc::utils::configuration_params configuration_params = cbtc::utils::read_configuration(argv[1]);
+    const std::string limboole_app_path = boost::get<0>(configuration_params);
+    const cbtc::utils::simple_logger::level logger_level = boost::get<1>(configuration_params);
+
+    const std::string input_tree_file = argv[2];
+    const std::string input_requirements_file = argv[3]; 
+    const std::string temp_folder = argv[4];
+    const std::string output_folder = argv[5];
 
     std::cout << "Check if a Conditional Behavior Tree (CBT) could be executed" << std::endl;    
     std::cout << std::endl;
@@ -103,6 +71,7 @@ int main(int argc, const char * argv[])
     std::cout << "  - output directory: " << output_folder << std::endl;
     std::cout << std::endl;
 
+    cbtc::utils::simple_logger::enabled_level_ = logger_level;    
     bool valid = false;
 
     try

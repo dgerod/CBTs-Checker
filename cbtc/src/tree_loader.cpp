@@ -67,7 +67,9 @@ std::string read_condition_label(std::string const line)
     }
 
     std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-    if(label.substr(0,3).find("not")!=std::string::npos)
+    if(label.substr(0,3).find("!") != std::string::npos or 
+       label.substr(0,3).find("not") != std::string::npos or
+       label.substr(0,3).find("NOT") != std::string::npos)
     {
         if(label.substr(4).find(" ") != std::string::npos)
         {

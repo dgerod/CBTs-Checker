@@ -139,21 +139,20 @@ SCENARIO("Error loading BT from YARP XML file")
             "Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
     }
     
-    /*
-    WHEN("The XML file is malformed")
-    {
-        cbtc::conditioned_behavior_tree cbtree;            
-        REQUIRE_THROWS_WITH(cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/data/load_bt_from_xml/inputs/wrong_format/req_f8.xml"), 
-            "Tree in input xml file is not well formated.");
-    }
     
-    WHEN("The XML file is malformed")
-    {
-        cbtc::conditioned_behavior_tree cbtree;            
-        REQUIRE_THROWS_WITH(cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/data/load_bt_from_xml/inputs/wrong_format/req_f9.xml"), 
-            "Tree in input xml file is not well formated.");
-    }
-    */    
+    //WHEN("The XML file is malformed")
+    //{
+    //  cbtc::conditioned_behavior_tree cbtree;            
+    //  REQUIRE_THROWS_WITH(cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/data/load_bt_from_xml/inputs/wrong_format/req_f8.xml"), 
+    //  "Tree in input xml file is not well formated.");
+    //}
+    
+    //WHEN("The XML file is malformed")
+    //{
+    //  cbtc::conditioned_behavior_tree cbtree;            
+    //  REQUIRE_THROWS_WITH(cbtc::tree_loader::bt_from_yarp_xml(cbtree, "./test/data/load_bt_from_xml/inputs/wrong_format/req_f9.xml"), 
+    //  "Tree in input xml file is not well formated.");
+    //}    
 }
 
 SCENARIO("Load BT from YARP XML file"){

@@ -1,6 +1,8 @@
 <ActionTemplate>
     <YARPAction ID = "Action1">
-
+    <Precondition ID = "Precondition_11">
+    <Precondition ID = "Precondition_12">
+    <Postcondition ID = "Postcondition_1">
 </ActionTemplate>
 
 <root>

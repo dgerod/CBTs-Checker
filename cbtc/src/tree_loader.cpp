@@ -369,8 +369,7 @@ namespace cbtc { namespace tree_loader {
 void bt_from_yarp_xml(cbtc::conditioned_behavior_tree& cbt, const std::string path)
 {
     simple_logger(simple_logger::level::DEBUG) << "bt_from_yarp_xml" << std::endl;
-
-    simple_logger(simple_logger::level::DEBUG) << "read input file" << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "input file: " << path << std::endl;
 
     std::ifstream file;
     file.open(path);

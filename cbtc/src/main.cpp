@@ -60,36 +60,50 @@ int main(int argc, const char * argv[])
     const std::string input_requirements_file = argv[3]; 
     const std::string temp_folder = argv[4];
     const std::string output_folder = argv[5];
+    cbtc::utils::simple_logger::enabled_level_ = logger_level;        
 
     std::cout << "Check if a Conditional Behavior Tree (CBT) could be executed" << std::endl;    
     std::cout << std::endl;
     std::cout << "Parameters" << std::endl;
     std::cout << "  - limboole path: " << limboole_app_path << std::endl;
-    std::cout << "  - tree: " << input_tree_file << std::endl;
-    std::cout << "  - initial state: " << input_requirements_file << std::endl;
+    std::cout << "  - tree file: " << input_tree_file << std::endl;
+    std::cout << "  - initial state file: " << input_requirements_file << std::endl;
     std::cout << "  - temp directory: " << temp_folder << std::endl;
     std::cout << "  - output directory: " << output_folder << std::endl;
+    std::cout << "  - logger: " << static_cast<int>(cbtc::utils::simple_logger::enabled_level_) << std::endl;
     std::cout << std::endl;
-
-    cbtc::utils::simple_logger::enabled_level_ = logger_level;    
-    bool valid = false;
+    
+    cbtc::conditioned_behavior_tree cbt;   
+    bool well_formated = true;
+    bool bt_valid = true;
 
     try
     {
-        cbtc::conditioned_behavior_tree cbt;    
         cbtc::tree_loader::bt_from_yarp_xml(cbt, input_tree_file);
-
-        cbtc::cbt_validator cbt_validator(limboole_app_path, temp_folder);    
-        valid = cbt_validator.validate(cbt, input_requirements_file);
-        write_result(output_folder, valid);
     }
     catch(const std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
-        exit(EXIT_FAILURE);
+        well_formated = false;
     }
 
+    try
+    {
+        if (well_formated)
+        {
+            cbtc::cbt_validator cbt_validator(limboole_app_path, temp_folder);    
+            bt_valid = cbt_validator.validate(cbt, input_requirements_file);
+        }
+    }
+    catch(const std::exception &e)
+    {
+        bt_valid = false;
+    }
+
+    write_result(output_folder, bt_valid);
+
     std::cout << std::endl;
-    std::cout << "CBT is valid? " << (valid ? "YES" : "NO") << std::endl;
+    std::cout << "CBT is well formated? " << (well_formated ? "YES" : "NO") << std::endl;
+    std::cout << "CBT is valid? " << (bt_valid ? "YES" : "NO") << std::endl;
+
     return EXIT_SUCCESS;
 }

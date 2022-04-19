@@ -22,7 +22,7 @@
     <BehaviorTree>
         <Fallback>
             <Sequence>
-                <YARPCondition ID="Condition1"/>
+                <Condition ID="Condition1"/>
                 <YARPAction ID="Action1"/>
             </Sequence>
             <Parallel>

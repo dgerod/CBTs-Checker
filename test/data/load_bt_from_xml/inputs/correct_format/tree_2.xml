@@ -9,7 +9,7 @@
 </ActionTemplate>
 
 <ActionTemplate>
-<YARPAction ID = "DO_MT_A">
+<Action ID = "DO_MT_A">
 <Precondition ID = "place_A_exists">
 <Postcondition ID = "in_place_A">
 </ActionTemplate>
@@ -40,7 +40,7 @@
                 <YARPAction ID = "DO_FO_A"/>
             </Sequence>
             <Sequence>
-                <YARPAction ID = "DO_MT_B"/>
+                <Action ID = "DO_MT_B"/>
                 <YARPAction ID = "DO_FO_B"/>
             </Sequence>
         </Fallback>

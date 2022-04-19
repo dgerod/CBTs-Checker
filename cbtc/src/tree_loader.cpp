@@ -95,7 +95,8 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
     // Get the label of the action and check the input format
     std::string line;
     line = get_next_line(file);
-    if (line.substr(0,11).find("YARPAction") == std::string::npos)
+    if (line.substr(0,11).find("YARPAction") == std::string::npos and
+        line.substr(0,11).find("Action") == std::string::npos)
     {
         throw std::runtime_error("Input XML file bad format: object ActionTemplate must contain object YARPAction");
     }
@@ -160,7 +161,8 @@ void read_execution_node(cbtc::conditioned_behavior_tree& cbt, std::string line,
     action* dummy_action = new action();
     dummy_action->set_label(label);
     
-    if(line.find("YARPAction") != std::string::npos) 
+    if(line.find("YARPAction") != std::string::npos or
+       line.find("Action") != std::string::npos) 
     {
         std::set<action> actions = cbt.get_actions();
         if(actions.find(*dummy_action) == actions.end())
@@ -168,10 +170,12 @@ void read_execution_node(cbtc::conditioned_behavior_tree& cbt, std::string line,
             throw std::runtime_error("Action not defined in the vocabulary");
         }
     }
-    if(line.find("YARPCondition") != std::string::npos) 
+    if(line.find("YARPCondition") != std::string::npos or
+       line.find("Condition") != std::string::npos) 
     {
         cbt.insert_action(dummy_action);
     }
+
     execution_node* node = new execution_node(label);
     parent->add(node);
 }
@@ -179,11 +183,15 @@ void read_execution_node(cbtc::conditioned_behavior_tree& cbt, std::string line,
 std::string read_next_node(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file, control_flow_node* const parent)
 {
     std::string line = get_next_line(file);
-    if(line.find("YARP") != std::string::npos)
+    
+    if(line.find("YARPAction") != std::string::npos or line.find("YARPCondition") != std::string::npos or
+       line.find("Action") != std::string::npos or line.find("Condition") != std::string::npos)
     {
         read_execution_node(cbt, line, parent);
         if (parent->get_type() == ROOT)
+        {
             line = get_next_line(file);
+        }
         return line;
     }
     else if(line.find("</") != std::string::npos)
@@ -215,20 +223,29 @@ std::string read_next_node(cbtc::conditioned_behavior_tree& cbt, std::ifstream* 
         do 
         {
             line = read_next_node(cbt, file, node);
-        } while(line.find("YARP") != std::string::npos);
+        } 
+        while(line.find("YARPAction") != std::string::npos or line.find("YARPCondition") != std::string::npos or
+              line.find("Action") != std::string::npos or line.find("Condition") != std::string::npos);
         
         // Check that the node is closed
         if (node->get_type() == SEQUENCE && line.find("</Sequence>")== std::string::npos)
+        {
                 throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
+        }
         else if (node->get_type() == FALLBACK && line.find("</Fallback>") == std::string::npos)
+        {
                 throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
+        }        
         else if (node->get_type() == PARALLEL && line.find("</Parallel>") == std::string::npos)
+        {
                 throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
-        
+        }
+
         do 
         {
             line = read_next_node(cbt, file, parent);
-        } while(line.find("YARP") != std::string::npos);
+        } 
+        while(line.find("YARP") != std::string::npos);
         
         return line;
     }

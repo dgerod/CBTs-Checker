@@ -74,7 +74,7 @@ int main(int argc, const char * argv[])
     std::cout << std::endl;
     
     cbtc::conditioned_behavior_tree cbt;   
-    bool well_formated = true;
+    bool well_formatted = true;
     bool bt_valid = true;
 
     try
@@ -83,12 +83,13 @@ int main(int argc, const char * argv[])
     }
     catch(const std::exception &e)
     {
-        well_formated = false;
+        well_formatted = false;
+        bt_valid = false;
     }
 
     try
     {
-        if (well_formated)
+        if (well_formatted)
         {
             cbtc::cbt_validator cbt_validator(limboole_app_path, temp_folder);    
             bt_valid = cbt_validator.validate(cbt, input_requirements_file);
@@ -102,7 +103,7 @@ int main(int argc, const char * argv[])
     write_result(output_folder, bt_valid);
 
     std::cout << std::endl;
-    std::cout << "CBT is well formated? " << (well_formated ? "YES" : "NO") << std::endl;
+    std::cout << "CBT is well formatted? " << (well_formatted ? "YES" : "NO") << std::endl;
     std::cout << "CBT is valid? " << (bt_valid ? "YES" : "NO") << std::endl;
 
     return EXIT_SUCCESS;

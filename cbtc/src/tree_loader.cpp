@@ -9,7 +9,6 @@ using namespace cbtc;
 using namespace cbtc::utils;
 
 
-
 namespace {
 
 // Function that ignores empty lines and whitespaces at the beginning of each
@@ -36,18 +35,42 @@ std::string get_next_line(std::ifstream* const file)
 // Function that, given a line, returns the cleaned action label.
 std::string read_action_label(std::string const line)
 {
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
-    
-    if (label.length()==0 || second_quotation_marks == std::string::npos) 
+    simple_logger(simple_logger::level::ERROR)
+        << "Line: " << line << std::endl;
+
+    unsigned long first_double_quotation_marks = line.find("\"");
+    unsigned long second_double_quotation_marks = line.find("\"", first_double_quotation_marks+1);
+    std::string double_quotations_label = line.substr(first_double_quotation_marks+1, second_double_quotation_marks-first_double_quotation_marks-1);
+    bool double_quotations = !(double_quotations_label.length()==0 || second_double_quotation_marks == std::string::npos);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label with double quotations: " << double_quotations_label << ", Valid? " << double_quotations << std::endl;
+
+    unsigned long first_single_quotation_marks = line.find("\'");
+    unsigned long second_single_quotation_marks = line.find("\'", first_single_quotation_marks+1);
+    std::string single_quotations_label = line.substr(first_single_quotation_marks+1, second_single_quotation_marks-first_single_quotation_marks-1);
+    bool single_quotations = !(single_quotations_label.length()==0 || second_single_quotation_marks == std::string::npos);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label with single quotations: " << single_quotations_label << ", Valid? " << single_quotations << std::endl;
+
+    if (!single_quotations and !double_quotations)
     {
+        simple_logger(simple_logger::level::ERROR)
+            << "Input XML file bad format: YARPAction must have identifier surrounded by quotation marks" << std::endl;
         throw std::runtime_error("Input XML file bad format: YARPAction must have identifier surrounded by quotation marks");
     }
 
+    std::string label = double_quotations ? double_quotations_label : single_quotations_label;
     std::transform(label.begin(), label.end(), label.begin(), ::tolower);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label: " << label << std::endl;
+
     if(label.find(" ") != std::string::npos)
     {
+        simple_logger(simple_logger::level::ERROR)
+            << "Input XML file bad format: YARPAction cannot contain whitespaces" << std::endl;
         throw std::runtime_error("Input XML file bad format: YARPAction cannot contain whitespaces");
     }
     
@@ -63,6 +86,8 @@ std::string read_condition_label(std::string const line)
     
     if (label.length()==0 || second_quotation_marks == std::string::npos)
     {
+        simple_logger(simple_logger::level::ERROR)
+            << "Input XML file bad format: Pre and Post conditions must have identifier surrounded by quotation marks" << std::endl;
         throw std::runtime_error("Input XML file bad format: Pre and Post conditions must have identifier surrounded by quotation marks");
     }
 
@@ -73,6 +98,8 @@ std::string read_condition_label(std::string const line)
     {
         if(label.substr(4).find(" ") != std::string::npos)
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces" << std::endl;
             throw std::runtime_error("Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces");
         }
         label = "!" + label.substr(4);
@@ -81,6 +108,8 @@ std::string read_condition_label(std::string const line)
     {
         if(label.find(" ") != std::string::npos) 
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: positive Pre and Post conditions cannot contain whitespaces" << std::endl;
             throw std::runtime_error("Input XML file bad format: positive Pre and Post conditions cannot contain whitespaces");
         }
     }
@@ -90,6 +119,8 @@ std::string read_condition_label(std::string const line)
 // Function processing and storing a single action
 void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file)
 {
+    simple_logger(simple_logger::level::DEBUG) << "[read_single_action] {" << std::endl;
+
     action* new_action = new action();
     
     // Get the label of the action and check the input format
@@ -98,6 +129,8 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
     if (line.substr(0,11).find("YARPAction") == std::string::npos and
         line.substr(0,11).find("Action") == std::string::npos)
     {
+        simple_logger(simple_logger::level::ERROR)
+            << "Input XML file bad format: object ActionTemplate must contain object YARPAction" << std::endl;
         throw std::runtime_error("Input XML file bad format: object ActionTemplate must contain object YARPAction");
     }
 
@@ -113,18 +146,21 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
 
         if(pre_label[0] == '!' && std::find(new_action->get_pre().begin(), new_action->get_pre().end(), pre_label.substr(1)) != new_action->get_pre().end())
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions" << std::endl;
             throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
         }
-        
         else if(pre_label[0] != '!' && (std::find(new_action->get_pre().cbegin(), new_action->get_pre().cend(), "!" + pre_label) != new_action->get_pre().cend())) 
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions" << std::endl;
             throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as pre-conditions");
         }
+
         new_action->insert_pre(pre_label);
-        
         line = get_next_line(file);
     }
-        
+
     // Get the Post-conditions of the action and check the input format
     std::string post_label;
     while(line.substr(0,14).find("Postcondition") != std::string::npos)
@@ -132,10 +168,14 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
         post_label = read_condition_label(line);
         if(post_label[0] == '!' && std::find(new_action->get_post().begin(), new_action->get_post().end(), post_label.substr(1)) != new_action->get_post().end())
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions" << std::endl;
             throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
         }
         else if(post_label[0] != '!' && std::find(new_action->get_post().begin(), new_action->get_post().end(), ("!" + post_label)) != new_action->get_post().end()) 
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions" << std::endl;
             throw std::runtime_error("Input XML file bad format: action cannot have 'c' and 'not c' as post-conditions");
         }
         new_action->insert_post(post_label);
@@ -145,19 +185,39 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
     // Check end of the function
     if (line.compare("</ActionTemplate>") != 0)
     {
+        simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: object ActionTemplate must end with </ActionTemplate>" << std::endl;
         throw std::runtime_error("Input XML file bad format: object ActionTemplate must end with </ActionTemplate>");
     }
     
-    // Insert the new action in the list of actions
     cbt.insert_action(new_action);
+    simple_logger(simple_logger::level::DEBUG) << "} [read_single_action]" << std::endl;
 }
 
 void read_execution_node(cbtc::conditioned_behavior_tree& cbt, std::string line, control_flow_node* const parent)
 {
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
+    unsigned long first_double_quotation_marks = line.find("\"");
+    unsigned long second_double_quotation_marks = line.find("\"", first_double_quotation_marks+1);
+    std::string double_quotations_label = line.substr(first_double_quotation_marks+1, second_double_quotation_marks-first_double_quotation_marks-1);
+    bool double_quotations = !(double_quotations_label.length()==0 || second_double_quotation_marks == std::string::npos);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label with double quotations: " << double_quotations_label << ", Valid? " << double_quotations << std::endl;
+
+    unsigned long first_single_quotation_marks = line.find("\'");
+    unsigned long second_single_quotation_marks = line.find("\'", first_single_quotation_marks+1);
+    std::string single_quotations_label = line.substr(first_single_quotation_marks+1, second_single_quotation_marks-first_single_quotation_marks-1);
+    bool single_quotations = !(single_quotations_label.length()==0 || second_single_quotation_marks == std::string::npos);
+
+     simple_logger(simple_logger::level::ERROR)
+        << "Label with single quotations: " << single_quotations_label << ", Valid? " << single_quotations << std::endl;
+
+    std::string label = double_quotations ? double_quotations_label : single_quotations_label;
     std::transform(label.begin(), label.end(), label.begin(), ::tolower);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label: " << label << std::endl;
+
     action* dummy_action = new action();
     dummy_action->set_label(label);
     
@@ -167,6 +227,8 @@ void read_execution_node(cbtc::conditioned_behavior_tree& cbt, std::string line,
         std::set<action> actions = cbt.get_actions();
         if(actions.find(*dummy_action) == actions.end())
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Action not defined in the vocabulary" << std::endl;
             throw std::runtime_error("Action not defined in the vocabulary");
         }
     }
@@ -215,6 +277,8 @@ std::string read_next_node(cbtc::conditioned_behavior_tree& cbt, std::ifstream* 
         }
         else
         {
+            simple_logger(simple_logger::level::ERROR)
+                << "Input XML file bad format: Behavior Tree bad format" << std::endl;
             throw std::runtime_error("Input XML file bad format: Behavior Tree bad format");
         }
 
@@ -253,7 +317,7 @@ std::string read_next_node(cbtc::conditioned_behavior_tree& cbt, std::ifstream* 
 
 std::string read_actions(cbtc::conditioned_behavior_tree& cbt, std::ifstream* const file)
 {
-    simple_logger(simple_logger::level::DEBUG) << "read_actions" << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "[read_actions] {" << std::endl;
 
     std::string line = get_next_line(file);
     while(line == "<ActionTemplate>")
@@ -262,6 +326,7 @@ std::string read_actions(cbtc::conditioned_behavior_tree& cbt, std::ifstream* co
         line = get_next_line(file);
     }    
 
+    simple_logger(simple_logger::level::DEBUG) << "} [read_actions]" << std::endl;
     return line;
 }
 

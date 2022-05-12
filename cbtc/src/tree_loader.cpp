@@ -80,17 +80,30 @@ std::string read_action_label(std::string const line)
 // Function that, given a line, returns the cleaned condition label.
 std::string read_condition_label(std::string const line)
 {
-    unsigned long first_quotation_marks = line.find("\"");
-    unsigned long second_quotation_marks = line.find("\"", first_quotation_marks+1);
-    std::string label = line.substr(first_quotation_marks+1, second_quotation_marks-first_quotation_marks-1);
+    unsigned long first_double_quotation_marks = line.find("\"");
+    unsigned long second_double_quotation_marks = line.find("\"", first_double_quotation_marks+1);
+    std::string double_quotations_label = line.substr(first_double_quotation_marks+1, second_double_quotation_marks-first_double_quotation_marks-1);
+    bool double_quotations = !(double_quotations_label.length()==0 || second_double_quotation_marks == std::string::npos);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label with double quotations: " << double_quotations_label << ", Valid? " << double_quotations << std::endl;
+
+    unsigned long first_single_quotation_marks = line.find("\'");
+    unsigned long second_single_quotation_marks = line.find("\'", first_single_quotation_marks+1);
+    std::string single_quotations_label = line.substr(first_single_quotation_marks+1, second_single_quotation_marks-first_single_quotation_marks-1);
+    bool single_quotations = !(single_quotations_label.length()==0 || second_single_quotation_marks == std::string::npos);
+
+    simple_logger(simple_logger::level::ERROR)
+        << "Label with single quotations: " << single_quotations_label << ", Valid? " << single_quotations << std::endl;
     
-    if (label.length()==0 || second_quotation_marks == std::string::npos)
+    if(!single_quotations and !double_quotations)
     {
         simple_logger(simple_logger::level::ERROR)
             << "Input XML file bad format: Pre and Post conditions must have identifier surrounded by quotation marks" << std::endl;
         throw std::runtime_error("Input XML file bad format: Pre and Post conditions must have identifier surrounded by quotation marks");
     }
 
+    std::string label = double_quotations ? double_quotations_label : single_quotations_label;
     std::transform(label.begin(), label.end(), label.begin(), ::tolower);
     if(label.substr(0,3).find("!") != std::string::npos or 
        label.substr(0,3).find("not") != std::string::npos or

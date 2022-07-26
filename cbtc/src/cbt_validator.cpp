@@ -1,6 +1,7 @@
 #include "cbt_validator.hpp"
 
 #include <iostream>
+#include <string>
 #include "simple_logger.hpp"
 
 
@@ -29,6 +30,21 @@ std::string get_next_line(std::ifstream* const file)
         }
     }
     return line;
+}
+
+void find_and_replace_all(std::string& data, std::string toSearch, std::string replaceStr)
+{
+    // Get the first occurrence
+    size_t pos = data.find(toSearch);
+    
+    // Repeat till end is reached
+    while(pos != std::string::npos)
+    {
+        // Replace this occurrence of Sub String
+        data.replace(pos, toSearch.size(), replaceStr);
+        // Get the next occurrence from the current position
+        pos =data.find(toSearch, pos + replaceStr.size());
+    }
 }
 
 bool find_text_in_file(const std::string file_path, const std::string text)
@@ -157,13 +173,17 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
 
     if (!requirements_file.empty())
     {
+        simple_logger(simple_logger::level::DEBUG) << "Initial requirement222222s: " << std::endl;
+
         std::ifstream req_file;
         req_file.open(requirements_file);
         if (!req_file.good())
         {
+            simple_logger(simple_logger::level::DEBUG) << "ERROR: Exception occurred while opening the file: initial requirements file not found." << std::endl;                    
             throw std::runtime_error("ERROR: Exception occurred while opening the file: initial requirements file not found.");
         }
 
+        simple_logger(simple_logger::level::DEBUG) << "Initial require33333s: " << std::endl;
         std::string line = "";
         bool end_file = false;
         
@@ -171,7 +191,18 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
         {
             if (!req_file.eof()) 
             {
-                std::getline(req_file >> std::ws, line);
+                std::getline(req_file >> std::ws, line);                
+                simple_logger(simple_logger::level::DEBUG) << "Original line: " << line << std::endl;
+
+                if (line.find("!") != std::string::npos)
+                {
+                    simple_logger(simple_logger::level::DEBUG) << "ERROR: Not allowed \"!\" in initial requirements use \"NOT\" instead." << std::endl;
+                    throw std::runtime_error("ERROR: Not allowed \"!\" in initial requirements use \"NOT\" instead.");
+                }
+                
+                find_and_replace_all(line, "NOT ", "!");
+                simple_logger(simple_logger::level::DEBUG) << "Replacing \"NOT\" by \"!\": " << line << std::endl;
+
                 file << line;
             }
             else
@@ -189,6 +220,8 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     {
         throw std::runtime_error("ERROR: An initial requirements is mandatory.");
     }
+
+    simple_logger(simple_logger::level::DEBUG) << "Initial require444444: " << std::endl;
 
     // Write all the formulas of the state graph of the type:
     //  a_i & \big_wedge {\neg c_i | c \in Pre}

@@ -57,8 +57,8 @@ std::string read_action_label(std::string const line)
     if (!single_quotations and !double_quotations)
     {
         simple_logger(simple_logger::level::ERROR)
-            << "Input XML file bad format: YARPAction must have identifier surrounded by quotation marks" << std::endl;
-        throw std::runtime_error("Input XML file bad format: YARPAction must have identifier surrounded by quotation marks");
+            << "Input XML file bad format: Action must have identifier surrounded by quotation marks" << std::endl;
+        throw std::runtime_error("Input XML file bad format: Action must have identifier surrounded by quotation marks");
     }
 
     std::string label = double_quotations ? double_quotations_label : single_quotations_label;
@@ -67,13 +67,18 @@ std::string read_action_label(std::string const line)
     simple_logger(simple_logger::level::ERROR)
         << "Label: " << label << std::endl;
 
-    if(label.find(" ") != std::string::npos)
+    if(label.find(" ") != std::string::npos)/annot contain whitespaces" << std::endl;
+        throw std::runtime_error("Input XML file bad format: Action cannot contain whitespaces");
+    }
+
+    // Consider :, <, >, = and others
+    if(label.find(":") != std::string::npos)
     {
         simple_logger(simple_logger::level::ERROR)
-            << "Input XML file bad format: YARPAction cannot contain whitespaces" << std::endl;
-        throw std::runtime_error("Input XML file bad format: YARPAction cannot contain whitespaces");
+            << "Input XML file bad format: Action cannot contain ':'" << std::endl;
+        throw std::runtime_error("Input XML file bad format: Action cannot contain whitespaces");
     }
-    
+
     return label;
 }
 
@@ -104,19 +109,26 @@ std::string read_condition_label(std::string const line)
     }
 
     std::string label = double_quotations ? double_quotations_label : single_quotations_label;
+
     std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-    if(label.substr(0,3).find("!") != std::string::npos or 
-       label.substr(0,3).find("not") != std::string::npos or
-       label.substr(0,3).find("NOT") != std::string::npos)
+
+    if (line.find("!") != std::string::npos)
     {
-        if(label.substr(4).find(" ") != std::string::npos)
+        simple_logger(simple_logger::level::DEBUG) << "ERROR: Not allowed \"!\" in Pre and Post conditions use \"NOT\" instead." << std::endl;
+        throw std::runtime_error("ERROR: Not allowed \"!\" in Pre and Post conditions use \"NOT\" instead.");
+    }
+
+    if(label.substr(0,4).find("not ") != std::string::npos or
+       label.substr(0,4).find("NOT ") != std::string::npos)
+    {
+        if(label.substr(5).find(" ") != std::string::npos)
         {
             simple_logger(simple_logger::level::ERROR)
                 << "Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces" << std::endl;
             throw std::runtime_error("Input XML file bad format: after \"not \" Pre and Post conditions cannot contain whitespaces");
         }
         label = "!" + label.substr(4);
-    } 
+    }
     else
     {
         if(label.find(" ") != std::string::npos) 
@@ -143,8 +155,8 @@ void read_single_action(cbtc::conditioned_behavior_tree& cbt, std::ifstream* con
         line.substr(0,11).find("Action") == std::string::npos)
     {
         simple_logger(simple_logger::level::ERROR)
-            << "Input XML file bad format: object ActionTemplate must contain object YARPAction" << std::endl;
-        throw std::runtime_error("Input XML file bad format: object ActionTemplate must contain object YARPAction");
+            << "Input XML file bad format: object ActionTemplate must contain object Action" << std::endl;
+        throw std::runtime_error("Input XML file bad format: object ActionTemplate must contain object Action");
     }
 
     std::string action_label = read_action_label(line);

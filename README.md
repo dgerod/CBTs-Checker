@@ -9,12 +9,6 @@ Eleonora Giunchiglia, Michele Colledanchise, Lorenzo Natale and Armando Tacchell
 * __Computing the Initial Requirements in Conditioned Behavior Trees__.
 Eleonora Giunchiglia [PDF](http://emas2018.dibris.unige.it/images/papers/EMAS18-08.pdf)
 
-## TO DO
-
-- Fix tests because now they are failing
-- Unify format used for negate preconditions in tree.xml with the one of init_state.txt
-- Allow that parallel nodes could have children that are not only execution nodes
-
 ## Installation
 
 ### Requirements 

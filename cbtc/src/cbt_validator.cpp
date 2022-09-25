@@ -173,7 +173,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
 
     if (!requirements_file.empty())
     {
-        simple_logger(simple_logger::level::DEBUG) << "Initial requirement222222s: " << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "Trying to open initial requirements" << std::endl;
 
         std::ifstream req_file;
         req_file.open(requirements_file);
@@ -183,7 +183,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
             throw std::runtime_error("ERROR: Exception occurred while opening the file: initial requirements file not found.");
         }
 
-        simple_logger(simple_logger::level::DEBUG) << "Initial require33333s: " << std::endl;
+        simple_logger(simple_logger::level::DEBUG) << "Initial requirements opened" << std::endl;
         std::string line = "";
         bool end_file = false;
         
@@ -218,10 +218,11 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     }
     else
     {
+        simple_logger(simple_logger::level::DEBUG) << "ERROR: An initial requirements is mandatory." << std::endl;
         throw std::runtime_error("ERROR: An initial requirements is mandatory.");
     }
 
-    simple_logger(simple_logger::level::DEBUG) << "Initial require444444: " << std::endl;
+    simple_logger(simple_logger::level::DEBUG) << "Write formulas in the state graph" << std::endl;
 
     // Write all the formulas of the state graph of the type:
     //  a_i & \big_wedge {\neg c_i | c \in Pre}
@@ -352,6 +353,7 @@ void cbt_validator::create_state_graph(cbtc::conditioned_behavior_tree& cbt,
     
     file.flush();
     file.close();
+
     simple_logger(simple_logger::level::DEBUG) << "[cbt_validator::create_state_graph] END" << std::endl;
 }
 

@@ -1,26 +1,25 @@
-
 <ActionTemplate>
-<YARPAction ID = "FB">
+<YARPAction ID="FB">
 <Precondition ID="rk">
 <Precondition ID="bv">
 <Postcondition ID="bl">
 </ActionTemplate>
 
 <ActionTemplate>
-<YARPAction ID = "TB">
+<YARPAction ID="TB">
 <Precondition ID="rk">
 <Precondition ID="bl">
 </ActionTemplate>
 
 <ActionTemplate>
-<YARPAction ID = "FeB">
+<YARPAction ID="FeB">
 <Precondition ID="rk">
 <Precondition ID="bl">
 <Postcondition ID="bf">
 </ActionTemplate>
 
 <ActionTemplate>
-<YARPAction ID = "AH">
+<YARPAction ID="AH">
 <Precondition ID="nh">
 </ActionTemplate>
 

@@ -1,5 +1,5 @@
 true & !false &
-nh_0 & !rk_0 & !bv_0 & !bl_0 & !bf_0  &
+nh_0 & !rk_0 & !bv_0 & !bl_0 & !bf_0 &
 ((ah_0 & (!nh_0)) | 
 (ah_1 & (!nh_1)) | 
 (ah_2 & (!nh_2)) | 

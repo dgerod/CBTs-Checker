@@ -1,1 +1,1 @@
-nh_0 & rk_0 & !bf_0 & !bl_0 & !bv_0 
+nh_0 & rk_0 & NOT bf_0 & NOT bl_0 & NOT bv_0
